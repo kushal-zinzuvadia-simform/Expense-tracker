@@ -1,5 +1,11 @@
-import { expenses } from "../state.js"
-import { setData } from "../storage.js";
+import { setData, getData } from "../storage.js";
+
+let expenses = getData("expenses") || [];
+let users = getData("users") || [];
+
+export function getUsers() {
+    return [...users];
+}
 
 export function addExpense(expense) {
     expenses.push(expense);
