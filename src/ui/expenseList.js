@@ -28,23 +28,23 @@ export function renderExpenses() {
 }
 
 function createExpenseCard(exp) {
-    const card = el("div", "expense-card");
+    const card = createElement("div", "expense-card");
 
-    const top = el("div", "expense-top");
-    const amount = el("span", "amount", `₹${exp.amount}`);
-    const date = el("span", "date", exp.date);
+    const top = createElement("div", "expense-top");
+    const amount = createElement("span", "amount", `₹${exp.amount}`);
+    const date = createElement("span", "date", exp.date);
     top.append(amount, date);
 
-    const middle = el("div", "expense-middle");
-    const desc = el("p", "description", exp.description);
-    const meta = el("p", "meta", `Paid by ${exp.paidBy}`);
+    const middle = createElement("div", "expense-middle");
+    const desc = createElement("p", "description", exp.description);
+    const meta = createElement("p", "meta", `Paid by ${exp.paidBy}`);
     middle.append(desc, meta);
 
-    const actions = el("div", "expense-actions");
-    const editBtn = el("button", "edit-btn", "Edit");
+    const actions = createElement("div", "expense-actions");
+    const editBtn = createElement("button", "edit-btn", "Edit");
     editBtn.dataset.id = exp.id;
 
-    const deleteBtn = el("button", "delete-btn", "Delete");
+    const deleteBtn = createElement("button", "delete-btn", "Delete");
     deleteBtn.dataset.id = exp.id;
     actions.append(editBtn, deleteBtn);
 
@@ -52,7 +52,7 @@ function createExpenseCard(exp) {
     return card;
 }
 
-function el(tag, className, text) {
+function createElement(tag, className, text) {
     const element = document.createElement(tag);
     if (className)
         element.className = className;
