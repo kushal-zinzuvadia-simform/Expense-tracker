@@ -3,9 +3,13 @@ import { renderExpenses } from "./expenseList.js";
 
 let editingId = null;
 const form = document.querySelector(".expense-form");
+const dateInput = document.querySelector("#date");
+const submitBtn = form.querySelector('button[type="submit"]');
+const amountInput = document.getElementById("amount");
+const descriptionInput = document.getElementById("description");
+const paidBySelect = document.getElementById("paidBy");
 
 export function initForm() {
-    const dateInput = document.querySelector("#date");
 
     function getToday() {
         return new Date().toISOString().split("T")[0];
@@ -27,7 +31,7 @@ export function initForm() {
             id: Date.now(),
             amount: Number(document.getElementById("amount").value),
             description: document.getElementById("description").value,
-            date: document.getElementById("date").value,
+            date: dateInput.value,
             paidBy: document.getElementById("paidBy").value
         };
 
@@ -57,7 +61,7 @@ export function initForm() {
 
         renderExpenses();
         form.reset();
-        form.querySelector('button[type="submit"]').textContent = "Add Expense";
+        submitBtn.textContent = "Add Expense";
         dateInput.value = getToday();
     });
 }
@@ -65,10 +69,10 @@ export function initForm() {
 export function setEditMode(expense) {
     editingId = expense.id;
 
-    document.getElementById("amount").value = expense.amount;
-    document.getElementById("description").value = expense.description;
-    document.getElementById("date").value = expense.date;
-    document.getElementById("paidBy").value = expense.paidBy;
+    amountInput.value = expense.amount;
+    descriptionInput.value = expense.description;
+    dateInput.value = expense.date;
+    paidBySelect.value = expense.paidBy;
 
-    form.querySelector('button[type="submit"]').textContent = "Update Expense";
+    submitBtn.textContent = "Update Expense";
 }
