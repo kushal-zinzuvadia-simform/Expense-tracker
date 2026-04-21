@@ -1,5 +1,3 @@
-'use strict'
-
 import { setEditMode } from "./form.js";
 import { deleteExpense, getExpenses } from "../services/expenseService.js";
 

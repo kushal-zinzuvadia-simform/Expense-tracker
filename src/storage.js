@@ -1,6 +1,3 @@
-'use strict'
-// To handle localStorage
-
 export function getData(key) {
     const data = localStorage.getItem(key);
     return data ? JSON.parse(data) : null;

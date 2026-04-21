@@ -1,5 +1,3 @@
-'use strict'
-
 import { expenses } from "../state.js"
 import { setData } from "../storage.js";
 
