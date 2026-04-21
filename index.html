@@ -25,7 +25,7 @@
 
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <input type="text" id="description" placeholder="e.g. Dinner" required>
+                    <input type="text" id="description" placeholder="e.g. Dinner" required minlength="3" maxlength="50">
                 </div>
 
                 <div class="form-group">
@@ -61,24 +61,6 @@
         <section id="expense-list">
             <h2>My Expenses</h2>
             <div class="expense-items">
-
-                <div class="expense-card">
-                    <div class="expense-top">
-                        <span class="amount">₹1000</span>
-                        <span class="date">16 Apr</span>
-                    </div>
-
-                    <div class="expense-middle">
-                        <p class="description">Dinner at restaurant</p>
-                        <p class="meta">Paid by Kushal • Split between A, B, C</p>
-                    </div>
-
-                    <div class="expense-actions">
-                        <button class="edit-btn">Edit</button>
-                        <button class="delete-btn">Delete</button>
-                    </div>
-                </div>
-
             </div>
         </section>
 
