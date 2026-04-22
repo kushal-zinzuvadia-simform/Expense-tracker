@@ -1,4 +1,5 @@
-import { addExpense, updateExpense } from "../services/expenseService.js";
+import { addExpense, updateExpense, getUsers } from "../services/expenseService.js";
+import { renderExpenses } from "./expenseList.js";
 
 const form = document.querySelector(".expense-form");
 const dateInput = document.querySelector("#date");
@@ -17,6 +18,9 @@ const editPaidBySelect = document.getElementById("edit-paidBy");
 
 const toastContainer = document.getElementById("toast-container");
 const amountInput = document.getElementById("amount");
+const descriptionInput = document.getElementById("description");
+const paidBySelect = document.getElementById("paidBy");
+const splitContainer = document.querySelector(".split-users");
 
 let editingId = null;
 
@@ -209,5 +213,37 @@ export function initForm({ onSave }) {
                 closeEditModal();
             }
         }
+    });
+}
+
+export function renderUserOptions() {
+    const users = getUsers();
+    paidBySelect.replaceChildren();
+
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Select user";
+    paidBySelect.appendChild(defaultOption);
+
+    users.forEach(user => {
+        const option = document.createElement("option");
+        option.value = user.id;
+        option.textContent = user.name;
+        paidBySelect.appendChild(option);
+    });
+
+    splitContainer.replaceChildren();
+
+    users.forEach(user => {
+        const label = document.createElement("label");
+
+        const checkBox = document.createElement("input");
+        checkBox.type = "checkBox";
+        checkBox.value = user.id;
+
+        label.appendChild(checkBox);
+        label.append(` ${user.name}`);
+
+        splitContainer.appendChild(label);
     });
 }

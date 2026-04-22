@@ -20,6 +20,19 @@ body {
     padding: 1.25rem 2rem;
     background: #4f46e5;
     color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-users {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.nav-users input {
+    width: 120px;
 }
 
 .navbar h1 {

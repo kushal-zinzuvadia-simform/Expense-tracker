@@ -16,8 +16,19 @@
 
 <body>
     <header class="navbar">
-        <h1>SettleUp</h1>
-        <p class="navbar-tagline">Split expenses, settle up easily</p>
+        <div>
+            <h1>SettleUp</h1>
+            <p class="navbar-tagline">Split expenses, settle up easily</p>
+        </div>
+
+        <div class="nav-user">
+            <select id="active-user-select">
+                <option value="">Select Active user</option>
+            </select>
+
+            <input type="text" id="new-user-input" placeholder="Add user">
+            <button id="add-user-btn">Add User</button>
+        </div>
     </header>
 
     <main class="container">
@@ -27,6 +38,46 @@
                 <button type="button" id="open-create-btn">+ New Expense</button>
             </div>
 
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="number" id="amount" placeholder="₹0.00" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" id="description" placeholder="e.g. Dinner" required minlength="3" maxlength="50">
+            </div>
+
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" id="date">
+            </div>
+
+            <div class="form-group">
+                <label for="paidBy">Paid By</label>
+                <select id="paidBy">
+                    <option value="">Select user</option>
+                    <!-- Dynamic users -->
+                </select>
+            </div>
+
+            <div class="form-group full-width">
+                <label>Split With</label>
+                <div class="split-users">
+                    <!-- Dynamic users -->
+                </div>
+            </div>
+
+            <div class="form-actions full-width">
+                <button type="reset">Reset</button>
+                <button type="submit">Add Expense</button>
+            </div>
+
+            </form>
+        </section>
+
+        <section id="expense-list">
+            <h2>My Expenses</h2>
             <div class="expense-items">
                 <!-- Dynamic expense cards -->
             </div>
@@ -133,7 +184,8 @@
 
                 <div class="form-group">
                     <label for="edit-description">Description</label>
-                    <input type="text" id="edit-description" placeholder="e.g. Dinner" required minlength="3" maxlength="50">
+                    <input type="text" id="edit-description" placeholder="e.g. Dinner" required minlength="3"
+                        maxlength="50">
                 </div>
 
                 <div class="form-group">
