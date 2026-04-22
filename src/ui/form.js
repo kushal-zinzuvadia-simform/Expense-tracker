@@ -25,73 +25,77 @@ const splitContainer = document.querySelector(".split-users");
 
 let editingId = null;
 
-function blockInvalidAmountKeys(e) {
-    if (["e", "E", "+", "-"].includes(e.key)) {
-        e.preventDefault();
-    }
+function getSelectedUsers() {
+    const checkboxes = splitContainer.querySelectorAll("input[type='checkbox']");
+    return [...checkboxes]
+        .filter(cb => cb.checked)
+        .map(cb => Number(cb.value));
 }
 
-function getToday() {
-    return new Date().toISOString().split("T")[0];
+function calculateSplit(amount, userIds) {
+    const splitAmount = amount / userIds.length;
+
+    return userIds.map(userId => ({
+        userId,
+        amount: Number(splitAmount.toFixed(2))
+    }));
 }
 
-function showToast(message) {
-    const toast = document.createElement("div");
-    toast.className = "toast";
-    toast.textContent = message;
-    toastContainer.appendChild(toast);
-
-    setTimeout(() => {
-        toast.classList.add("toast-out");
-        toast.addEventListener("animationend", () => toast.remove());
-    }, 3000);
-}
-
-function openModal(modal) {
-    modal.classList.add("active");
-    modal.setAttribute("aria-hidden", "false");
-}
-
-function closeModal(modal) {
-    modal.classList.remove("active");
-    modal.setAttribute("aria-hidden", "true");
-}
-
-function openCreateModal() {
-    dateInput.value = getToday();
-    dateInput.max = getToday();
-    openModal(createModal);
-}
-
-function closeCreateModal() {
-    closeModal(createModal);
-    form.reset();
-}
-
-function openEditModal() {
-    openModal(editModal);
-}
-
-function closeEditModal() {
-    closeModal(editModal);
-    editingId = null;
-    editForm.reset();
-}
-
-export function setEditMode(expense) {
-    editingId = expense.id;
-
-    editAmountInput.value = expense.amount;
-    editDescriptionInput.value = expense.description;
-    editDateInput.value = expense.date;
-    editDateInput.max = getToday();
-    editPaidBySelect.value = expense.paidBy;
-
-    openEditModal();
-}
-
-// Accepts a callback to render Expenses
 export function initForm({ onSave }) {
+
+    function blockInvalidAmountKeys(e) {
+        if (["e", "E", "+", "-"].includes(e.key)) {
+            e.preventDefault();
+        }
+    }
+
+    function getToday() {
+        return new Date().toISOString().split("T")[0];
+    }
+
+    function showToast(message) {
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.textContent = message;
+        toastContainer.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add("toast-out");
+            toast.addEventListener("animationend", () => toast.remove());
+        }, 3000);
+    }
+
+    function openModal(modal) {
+        modal.classList.add("active");
+        modal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal(modal) {
+        modal.classList.remove("active");
+        modal.setAttribute("aria-hidden", "true");
+    }
+
+    function openCreateModal() {
+        dateInput.value = getToday();
+        dateInput.max = getToday();
+        openModal(createModal);
+    }
+
+    function closeCreateModal() {
+        closeModal(createModal);
+        form.reset();
+    }
+
+    function openEditModal() {
+        openModal(editModal);
+    }
+
+    function closeEditModal() {
+        closeModal(editModal);
+        editingId = null;
+        editForm.reset();
+    }
+
     amountInput.addEventListener("keydown", blockInvalidAmountKeys);
     editAmountInput.addEventListener("keydown", blockInvalidAmountKeys);
 
@@ -109,31 +113,31 @@ export function initForm({ onSave }) {
     form.addEventListener("submit", (e) => {
         e.preventDefault();
         const current = getToday();
+        const selectedUsers = getSelectedUsers();
 
-        const expense = {
-            id: crypto.randomUUID(),
-            amount: Number(document.getElementById("amount").value),
-            description: document.getElementById("description").value,
-            date: dateInput.value,
-            paidBy: document.getElementById("paidBy").value
-        };
+        if (selectedUsers.length < 1) {
+            showToast("Select at least one user to split");
+            return;
+        }
 
-        if (!expense.amount || expense.amount <= 0) {
+        const amount = Number(amountInput.value);
+        const description = descriptionInput.value.trim();
+        const paidBy = paidBySelect.value;
+
+        if (!amount || amount <= 0) {
             showToast("Amount must be a positive number.");
             return;
         }
 
-        if (expense.date > current) {
+        if (dateInput.value > current) {
             showToast("Future dates are not allowed.");
             return;
         }
 
-        if (!expense.paidBy.trim()) {
+        if (!paidBy) {
             showToast("Please select who paid for this expense.");
             return;
         }
-
-        const description = expense.description.trim();
 
         if (description.length < 3) {
             showToast("Description must be at least 3 characters.");
@@ -145,9 +149,23 @@ export function initForm({ onSave }) {
             return;
         }
 
+        const split = calculateSplit(amount, selectedUsers);
+
+        const expense = {
+            id: crypto.randomUUID(),
+            amount,
+            description,
+            date: dateInput.value,
+            paidBy,
+            split
+        };
+
         addExpense(expense);
         onSave();
         closeCreateModal();
+        form.reset();
+        const checkboxes = splitContainer.querySelectorAll("input[type='checkbox']");
+        checkboxes.forEach(cb => cb.checked = false);
     });
 
     // Edit modal controls
@@ -164,30 +182,24 @@ export function initForm({ onSave }) {
         e.preventDefault();
         const current = getToday();
 
-        const expense = {
-            id: editingId,
-            amount: Number(editAmountInput.value),
-            description: editDescriptionInput.value,
-            date: editDateInput.value,
-            paidBy: editPaidBySelect.value
-        };
+        const amount = Number(editAmountInput.value);
+        const description = editDescriptionInput.value.trim();
+        const paidBy = editPaidBySelect.value;
 
-        if (!expense.amount || expense.amount <= 0) {
+        if (!amount || amount <= 0) {
             showToast("Amount must be a positive number.");
             return;
         }
 
-        if (expense.date > current) {
+        if (editDateInput.value > current) {
             showToast("Future dates are not allowed.");
             return;
         }
 
-        if (!expense.paidBy.trim()) {
+        if (!paidBy) {
             showToast("Please select who paid for this expense.");
             return;
         }
-
-        const description = expense.description.trim();
 
         if (description.length < 3) {
             showToast("Description must be at least 3 characters.");
@@ -198,6 +210,18 @@ export function initForm({ onSave }) {
             showToast("Description must not exceed 50 characters.");
             return;
         }
+
+        const selectedUsers = getSelectedUsers();
+        const split = calculateSplit(amount, selectedUsers);
+
+        const expense = {
+            id: editingId,
+            amount,
+            description,
+            date: editDateInput.value,
+            paidBy,
+            split
+        };
 
         updateExpense(editingId, expense);
         onSave();
@@ -215,6 +239,25 @@ export function initForm({ onSave }) {
             }
         }
     });
+}
+
+export function setEditMode(expense) {
+    editingId = expense.id;
+    const selectedIds = expense.split.map(s => s.userId);
+
+    const checkboxes = splitContainer.querySelectorAll("input[type='checkbox']");
+    checkboxes.forEach(cb => {
+        cb.checked = selectedIds.includes(Number(cb.value));
+    });
+
+    editAmountInput.value = expense.amount;
+    editDescriptionInput.value = expense.description;
+    editDateInput.value = expense.date;
+    editDateInput.max = new Date().toISOString().split("T")[0];
+    editPaidBySelect.value = expense.paidBy;
+
+    editModal.classList.add("active");
+    editModal.setAttribute("aria-hidden", "false");
 }
 
 export function renderUserOptions() {
@@ -239,7 +282,7 @@ export function renderUserOptions() {
         const label = document.createElement("label");
 
         const checkBox = document.createElement("input");
-        checkBox.type = "checkBox";
+        checkBox.type = "checkbox";
         checkBox.value = user.id;
 
         label.appendChild(checkBox);

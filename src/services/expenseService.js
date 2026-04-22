@@ -1,10 +1,12 @@
 import { setData, getData } from "../storage.js";
+import { renderSummary } from "../ui/summary.js";
 
 let expenses = getData("expenses") || [];
 
 export function addExpense(expense) {
     expenses.push(expense);
     setData("expenses", expenses);
+    renderSummary();
 }
 
 export function getExpenses() {
@@ -17,6 +19,7 @@ export function deleteExpense(id) {
         expenses.splice(index, 1);
         setData("expenses", expenses);
     }
+    renderSummary();
 }
 
 export function updateExpense(id, updatedData) {
@@ -25,4 +28,5 @@ export function updateExpense(id, updatedData) {
         expenses[index] = updatedData;
         setData("expenses", expenses);
     }
+    renderSummary();
 }

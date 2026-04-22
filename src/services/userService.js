@@ -1,4 +1,4 @@
-import { getData } from "../storage.js";
+import { getData, setData } from "../storage.js";
 
 let users = getData("users") || [];
 let activeUserId = getData("activeUserId") || null;

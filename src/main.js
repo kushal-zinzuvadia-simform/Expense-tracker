@@ -8,6 +8,9 @@ import { initUser } from "./ui/user.js";
 initUI();
 
 initUser();
-initForm();
+initForm({ onSave: () => {
+    renderExpenses();
+    renderSummary();
+} });
 renderExpenses();
 renderSummary();

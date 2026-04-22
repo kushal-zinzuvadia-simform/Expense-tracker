@@ -6,6 +6,12 @@ const emptyState = document.getElementById("empty-state");
 
 let handleEdit = null;
 
+container.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    const id = Number(btn.dataset.id);
+});
+
 // Accepts a callback to set Edit mode
 export function initExpenseList({ onEdit }) {
     handleEdit = onEdit;

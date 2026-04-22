@@ -1,5 +1,7 @@
 import { addUser, getActiveUser, getUsers, setActiveUser } from "../services/userService.js"
+import { renderExpenses } from "./expenseList.js";
 import { renderUserOptions } from "./form.js";
+import { renderSummary } from "./summary.js";
 
 const select = document.getElementById("active-user-select");
 const input = document.getElementById("new-user-input");
@@ -9,7 +11,7 @@ export function initUser() {
     renderUserDropdown();
 
     addBtn.addEventListener("click", handleAddUser);
-    select.addEventListener("change", handleSwitchUser); 
+    select.addEventListener("change", handleSwitchUser);
 }
 
 function renderUserDropdown() {
@@ -32,7 +34,7 @@ function renderUserDropdown() {
             option.selected = true;
         }
 
-        select.appendChild(option); 
+        select.appendChild(option);
     });
 }
 
@@ -57,7 +59,6 @@ function handleSwitchUser(e) {
 
     setActiveUser(userId);
     renderUserDropdown();
+    renderExpenses();
+    renderSummary();
 }
-
-renderUserDropdown();
-renderUserOptions();
