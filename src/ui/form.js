@@ -1,4 +1,5 @@
-import { addExpense, updateExpense, getUsers } from "../services/expenseService.js";
+import { addExpense, updateExpense } from "../services/expenseService.js";
+import { getUsers } from "../services/userService.js";
 import { renderExpenses } from "./expenseList.js";
 
 const form = document.querySelector(".expense-form");

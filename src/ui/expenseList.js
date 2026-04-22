@@ -1,4 +1,5 @@
 import { deleteExpense, getExpenses } from "../services/expenseService.js";
+import { getUserNameById } from "../services/userService.js";
 
 const container = document.querySelector(".expense-items");
 const emptyState = document.getElementById("empty-state");
@@ -50,7 +51,7 @@ function createExpenseCard(exp) {
 
     const middle = createElement("div", "expense-middle");
     const desc = createElement("p", "description", exp.description);
-    const meta = createElement("p", "meta", `Paid by ${exp.paidBy}`);
+    const meta = createElement("p", "meta", `Paid by ${getUserNameById(exp.paidBy)}`);
     middle.append(desc, meta);
 
     const actions = createElement("div", "expense-actions");

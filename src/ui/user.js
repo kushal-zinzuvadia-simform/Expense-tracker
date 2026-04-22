@@ -1,4 +1,4 @@
-import { addUser, getActiveUser, getUsers, setActiveUser } from "../services/expenseService.js"
+import { addUser, getActiveUser, getUsers, setActiveUser } from "../services/userService.js"
 import { renderUserOptions } from "./form.js";
 
 const select = document.getElementById("active-user-select");
