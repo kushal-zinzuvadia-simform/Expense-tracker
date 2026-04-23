@@ -31,4 +31,3 @@ export function updateExpense(id, updatedData) {
         setData("expenses", expenses);
     }
 }
-

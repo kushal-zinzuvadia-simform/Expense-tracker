@@ -12,7 +12,7 @@ container.addEventListener("click", (e) => {
     }
 
     if (e.target.classList.contains("edit-btn")) {
-        const expense = getExpenses().find(e => e.id == id);
+        const expense = getExpenses().find(e => e.id === id);
         setEditMode(expense);
     }
 });
