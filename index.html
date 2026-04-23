@@ -100,6 +100,53 @@
         </section>
     </main>
 
+    <!-- Edit Expense Modal -->
+    <div id="edit-modal" class="modal-overlay" aria-hidden="true">
+        <div class="modal">
+            <h2>Edit Expense</h2>
+            <form id="edit-expense-form" class="expense-form">
+
+                <div class="form-group">
+                    <label for="edit-amount">Amount</label>
+                    <input type="number" id="edit-amount" placeholder="₹0.00" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-description">Description</label>
+                    <input type="text" id="edit-description" placeholder="e.g. Dinner" required minlength="3" maxlength="50">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-date">Date</label>
+                    <input type="date" id="edit-date">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-paidBy">Paid By</label>
+                    <select id="edit-paidBy">
+                        <option value="">Select user</option>
+                        <!-- Dynamic users -->
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Split With</label>
+                    <div class="split-users">
+                        <label><input type="checkbox" value="1"> Kushal</label>
+                        <label><input type="checkbox" value="2"> User A</label>
+                        <label><input type="checkbox" value="3"> User B</label>
+                    </div>
+                </div>
+
+                <div class="form-actions full-width">
+                    <button type="button" id="cancel-edit-btn">Cancel Edit</button>
+                    <button type="submit">Update Expense</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
     <script src="./src/main.js" type="module"></script>
 </body>
 

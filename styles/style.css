@@ -207,3 +207,53 @@ button[type="submit"] {
     color: red;
     font-weight: bold;
 }
+
+/* Edit Expense Modal */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    width: min(90%, 520px);
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.25s ease;
+}
+
+.modal-overlay.active .modal {
+    transform: scale(1) translateY(0);
+}
+
+.modal h2 {
+    margin-bottom: 1.25rem;
+    font-size: 1.3rem;
+}
+
+#cancel-edit-btn {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+#cancel-edit-btn:hover {
+    background: #d1d5db;
+}
