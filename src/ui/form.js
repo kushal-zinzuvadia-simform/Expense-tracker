@@ -26,7 +26,7 @@ const splitContainer = document.querySelector(".split-users");
 let editingId = null;
 
 function getSelectedUsers() {
-    const checkboxes = splitContainer.querySelectorAll("input[type='checkbox']");
+    const checkboxes = getCheckboxes();
     return [...checkboxes]
         .filter(cb => cb.checked)
         .map(cb => Number(cb.value));
@@ -196,48 +196,8 @@ export function initForm({ onSave }) {
             return;
         }
 
-        if (!paidBy) {
-            showToast("Please select who paid for this expense.");
-            return;
-        }
-
-        if (description.length < 3) {
-            showToast("Description must be at least 3 characters.");
-            return;
-        }
-
-        if (description.length > 50) {
-            showToast("Description must not exceed 50 characters.");
-            return;
-        }
-
-        const selectedUsers = getSelectedUsers();
-        const split = calculateSplit(amount, selectedUsers);
-
-        const expense = {
-            id: editingId,
-            amount,
-            description,
-            date: editDateInput.value,
-            paidBy,
-            split
-        };
-
-        updateExpense(editingId, expense);
-        onSave();
-        closeEditModal();
-    });
-
-    // Escape key closes any active modal
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            if (createModal.classList.contains("active")) {
-                closeCreateModal();
-            }
-            if (editModal.classList.contains("active")) {
-                closeEditModal();
-            }
-        }
+        submitBtn.textContent = "Add Expense";
+        dateInput.value = getToday();
     });
 }
 
@@ -245,7 +205,7 @@ export function setEditMode(expense) {
     editingId = expense.id;
     const selectedIds = expense.split.map(s => s.userId);
 
-    const checkboxes = splitContainer.querySelectorAll("input[type='checkbox']");
+    const checkboxes = getCheckboxes();
     checkboxes.forEach(cb => {
         cb.checked = selectedIds.includes(Number(cb.value));
     });
@@ -290,4 +250,8 @@ export function renderUserOptions() {
 
         splitContainer.appendChild(label);
     });
+}
+
+function getCheckboxes() {
+    return splitContainer.querySelectorAll("input[type='checkbox']");
 }

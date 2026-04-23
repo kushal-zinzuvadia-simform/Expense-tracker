@@ -57,8 +57,9 @@ function createExpenseCard(exp) {
 
     const middle = createElement("div", "expense-middle");
     const desc = createElement("p", "description", exp.description);
-    const meta = createElement("p", "meta", `Paid by ${getUserNameById(exp.paidBy)}`);
-    middle.append(desc, meta);
+    const paidBy = createElement("p", "meta", `Paid by ${getUserNameById(exp.paidBy)}`);
+    const splitWith = createElement("p", "meta", "Split with " + getSplitNames(exp.split));
+    middle.append(desc, paidBy, splitWith);
 
     const actions = createElement("div", "expense-actions");
     const editBtn = createElement("button", "edit-btn", "Edit");
@@ -80,4 +81,13 @@ function createElement(tag, className, text) {
         element.textContent = text;
 
     return element;
+}
+
+function getSplitNames(splitData) {
+    const names = [];
+    splitData.forEach(split => {
+        names.push(getUserNameById(split.userId));
+    });
+
+    return names;
 }
