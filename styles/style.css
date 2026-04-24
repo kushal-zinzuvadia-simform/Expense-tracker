@@ -257,3 +257,56 @@ button[type="submit"] {
 #cancel-edit-btn:hover {
     background: #d1d5db;
 }
+
+/* Notifications */
+#toast-container {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    pointer-events: none;
+}
+
+.toast {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    pointer-events: auto;
+    animation: toast-in 0.3s ease forwards;
+    max-width: min(90vw, 400px);
+}
+
+.toast.toast-out {
+    animation: toast-out 0.3s ease forwards;
+}
+
+@keyframes toast-in {
+    from {
+        opacity: 0;
+        transform: translateY(-1rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes toast-out {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-1rem);
+    }
+}

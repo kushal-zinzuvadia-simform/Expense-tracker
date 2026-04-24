@@ -10,11 +10,24 @@ const editAmountInput = document.getElementById("edit-amount");
 const editDescriptionInput = document.getElementById("edit-description");
 const editDateInput = document.getElementById("edit-date");
 const editPaidBySelect = document.getElementById("edit-paidBy");
+const toastContainer = document.getElementById("toast-container");
 
 let editingId = null;
 
 function getToday() {
     return new Date().toISOString().split("T")[0];
+}
+
+function showToast(message) {
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.textContent = message;
+    toastContainer.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add("toast-out");
+        toast.addEventListener("animationend", () => toast.remove());
+    }, 3000);
 }
 
 function openModal() {
@@ -63,19 +76,24 @@ export function initForm({ onSave }) {
         };
 
         if (expense.date > current) {
-            alert("Future dates are not allowed.");
+            showToast("Future dates are not allowed.");
+            return;
+        }
+
+        if (!expense.paidBy.trim()) {
+            showToast("Please select who paid for this expense.");
             return;
         }
 
         const description = expense.description.trim();
 
         if (description.length < 3) {
-            alert("Description must be at least 3 characters");
+            showToast("Description must be at least 3 characters.");
             return;
         }
 
         if (description.length > 50) {
-            alert("Description exceed 50 characters");
+            showToast("Description must not exceed 50 characters.");
             return;
         }
 
@@ -98,19 +116,24 @@ export function initForm({ onSave }) {
         };
 
         if (expense.date > current) {
-            alert("Future dates are not allowed.");
+            showToast("Future dates are not allowed.");
+            return;
+        }
+
+        if (!expense.paidBy.trim()) {
+            showToast("Please select who paid for this expense.");
             return;
         }
 
         const description = expense.description.trim();
 
         if (description.length < 3) {
-            alert("Description must be at least 3 characters");
+            showToast("Description must be at least 3 characters.");
             return;
         }
 
         if (description.length > 50) {
-            alert("Description exceed 50 characters");
+            showToast("Description must not exceed 50 characters.");
             return;
         }
 
