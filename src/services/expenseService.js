@@ -9,7 +9,7 @@ export function addExpense(expense) {
 }
 
 export function getExpenses() {
-    return expenses;
+    return [...expenses];
 }
 
 export function deleteExpense(id) {

@@ -11,8 +11,15 @@ const editDescriptionInput = document.getElementById("edit-description");
 const editDateInput = document.getElementById("edit-date");
 const editPaidBySelect = document.getElementById("edit-paidBy");
 const toastContainer = document.getElementById("toast-container");
+const amountInput = document.getElementById("amount");
 
 let editingId = null;
+
+function blockInvalidAmountKeys(e) {
+    if (["e", "E", "+", "-"].includes(e.key)) {
+        e.preventDefault();
+    }
+}
 
 function getToday() {
     return new Date().toISOString().split("T")[0];
@@ -63,6 +70,9 @@ export function initForm({ onSave }) {
     }
     dateInput.max = today;
 
+    amountInput.addEventListener("keydown", blockInvalidAmountKeys);
+    editAmountInput.addEventListener("keydown", blockInvalidAmountKeys);
+
     form.addEventListener("submit", (e) => {
         e.preventDefault();
         const current = getToday();
@@ -74,6 +84,11 @@ export function initForm({ onSave }) {
             date: dateInput.value,
             paidBy: document.getElementById("paidBy").value
         };
+
+        if (!expense.amount || expense.amount <= 0) {
+            showToast("Amount must be a positive number.");
+            return;
+        }
 
         if (expense.date > current) {
             showToast("Future dates are not allowed.");
@@ -114,6 +129,11 @@ export function initForm({ onSave }) {
             date: editDateInput.value,
             paidBy: editPaidBySelect.value
         };
+
+        if (!expense.amount || expense.amount <= 0) {
+            showToast("Amount must be a positive number.");
+            return;
+        }
 
         if (expense.date > current) {
             showToast("Future dates are not allowed.");
