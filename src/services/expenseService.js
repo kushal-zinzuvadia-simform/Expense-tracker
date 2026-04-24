@@ -3,10 +3,6 @@ import { setData, getData } from "../storage.js";
 let expenses = getData("expenses") || [];
 let users = getData("users") || [];
 
-export function getUsers() {
-    return [...users];
-}
-
 export function addExpense(expense) {
     expenses.push(expense);
     setData("expenses", expenses);
