@@ -1,21 +1,27 @@
-import { setEditMode } from "./form.js";
 import { deleteExpense, getExpenses } from "../services/expenseService.js";
 
 const container = document.querySelector(".expense-items");
 
-container.addEventListener("click", (e) => {
-    const id = Number(e.target.dataset.id);
+let handleEdit = null;
 
-    if (e.target.classList.contains("delete-btn")) {
-        deleteExpense(id);
-        renderExpenses();
-    }
+// Accepts a callback to set Edit mode
+export function initExpenseList({ onEdit }) {
+    handleEdit = onEdit;
 
-    if (e.target.classList.contains("edit-btn")) {
-        const expense = getExpenses().find(e => e.id === id);
-        setEditMode(expense);
-    }
-});
+    container.addEventListener("click", (e) => {
+        const id = Number(e.target.dataset.id);
+
+        if (e.target.classList.contains("delete-btn")) {
+            deleteExpense(id);
+            renderExpenses();
+        }
+
+        if (e.target.classList.contains("edit-btn")) {
+            const expense = getExpenses().find(exp => exp.id === id);
+            if (handleEdit) handleEdit(expense);
+        }
+    });
+}
 
 export function renderExpenses() {
     const expenses = getExpenses();

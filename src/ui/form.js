@@ -1,5 +1,4 @@
 import { addExpense, updateExpense } from "../services/expenseService.js";
-import { renderExpenses } from "./expenseList.js";
 
 const form = document.querySelector(".expense-form");
 const dateInput = document.querySelector("#date");
@@ -30,7 +29,7 @@ function closeModal() {
     editForm.reset();
 }
 
-    export function setEditMode(expense) {
+export function setEditMode(expense) {
     editingId = expense.id;
 
     editAmountInput.value = expense.amount;
@@ -42,7 +41,8 @@ function closeModal() {
     openModal();
 }
 
-export function initForm() {
+// Accepts a callback to render Expenses
+export function initForm({ onSave }) {
     const today = getToday();
 
     if (!dateInput.value) {
@@ -80,7 +80,7 @@ export function initForm() {
         }
 
         addExpense(expense);
-        renderExpenses();
+        onSave();
         form.reset();
         dateInput.value = getToday();
     });
@@ -115,7 +115,7 @@ export function initForm() {
         }
 
         updateExpense(editingId, expense);
-        renderExpenses();
+        onSave();
         closeModal();
     });
 

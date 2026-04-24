@@ -1,5 +1,3 @@
-import { initForm } from "./ui/form.js";
-import { renderExpenses } from "./ui/expenseList.js";
+import { initUI } from "./controllers/uiController.js";
 
-initForm();
-renderExpenses();
+initUI();
