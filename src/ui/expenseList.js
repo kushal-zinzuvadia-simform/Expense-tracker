@@ -1,6 +1,7 @@
 import { deleteExpense, getExpenses } from "../services/expenseService.js";
 
 const container = document.querySelector(".expense-items");
+const emptyState = document.getElementById("empty-state");
 
 let handleEdit = null;
 
@@ -26,6 +27,12 @@ export function initExpenseList({ onEdit }) {
 export function renderExpenses() {
     const expenses = getExpenses();
     container.replaceChildren();
+
+    if (expenses.length === 0) {
+        emptyState.classList.remove("hidden");
+    } else {
+        emptyState.classList.add("hidden");
+    }
 
     expenses.forEach(exp => {
         const card = createExpenseCard(exp);

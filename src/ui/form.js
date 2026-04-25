@@ -3,13 +3,18 @@ import { addExpense, updateExpense } from "../services/expenseService.js";
 const form = document.querySelector(".expense-form");
 const dateInput = document.querySelector("#date");
 
-const modal = document.getElementById("edit-modal");
+const createModal = document.getElementById("create-modal");
+const openCreateBtn = document.getElementById("open-create-btn");
+const cancelCreateBtn = document.getElementById("cancel-create-btn");
+
+const editModal = document.getElementById("edit-modal");
 const editForm = document.getElementById("edit-expense-form");
-const cancelBtn = document.getElementById("cancel-edit-btn");
+const cancelEditBtn = document.getElementById("cancel-edit-btn");
 const editAmountInput = document.getElementById("edit-amount");
 const editDescriptionInput = document.getElementById("edit-description");
 const editDateInput = document.getElementById("edit-date");
 const editPaidBySelect = document.getElementById("edit-paidBy");
+
 const toastContainer = document.getElementById("toast-container");
 const amountInput = document.getElementById("amount");
 
@@ -37,14 +42,33 @@ function showToast(message) {
     }, 3000);
 }
 
-function openModal() {
+function openModal(modal) {
     modal.classList.add("active");
     modal.setAttribute("aria-hidden", "false");
 }
 
-function closeModal() {
+function closeModal(modal) {
     modal.classList.remove("active");
     modal.setAttribute("aria-hidden", "true");
+}
+
+function openCreateModal() {
+    dateInput.value = getToday();
+    dateInput.max = getToday();
+    openModal(createModal);
+}
+
+function closeCreateModal() {
+    closeModal(createModal);
+    form.reset();
+}
+
+function openEditModal() {
+    openModal(editModal);
+}
+
+function closeEditModal() {
+    closeModal(editModal);
     editingId = null;
     editForm.reset();
 }
@@ -58,21 +82,25 @@ export function setEditMode(expense) {
     editDateInput.max = getToday();
     editPaidBySelect.value = expense.paidBy;
 
-    openModal();
+    openEditModal();
 }
 
 // Accepts a callback to render Expenses
 export function initForm({ onSave }) {
-    const today = getToday();
-
-    if (!dateInput.value) {
-        dateInput.value = today;
-    }
-    dateInput.max = today;
-
     amountInput.addEventListener("keydown", blockInvalidAmountKeys);
     editAmountInput.addEventListener("keydown", blockInvalidAmountKeys);
 
+    // Create modal controls
+    openCreateBtn.addEventListener("click", openCreateModal);
+    cancelCreateBtn.addEventListener("click", closeCreateModal);
+
+    createModal.addEventListener("click", (e) => {
+        if (e.target === createModal) {
+            closeCreateModal();
+        }
+    });
+
+    // Add Expense submit
     form.addEventListener("submit", (e) => {
         e.preventDefault();
         const current = getToday();
@@ -114,10 +142,19 @@ export function initForm({ onSave }) {
 
         addExpense(expense);
         onSave();
-        form.reset();
-        dateInput.value = getToday();
+        closeCreateModal();
     });
 
+    // Edit modal controls
+    cancelEditBtn.addEventListener("click", closeEditModal);
+
+    editModal.addEventListener("click", (e) => {
+        if (e.target === editModal) {
+            closeEditModal();
+        }
+    });
+
+    // Update Expense submit
     editForm.addEventListener("submit", (e) => {
         e.preventDefault();
         const current = getToday();
@@ -159,20 +196,18 @@ export function initForm({ onSave }) {
 
         updateExpense(editingId, expense);
         onSave();
-        closeModal();
+        closeEditModal();
     });
 
-    cancelBtn.addEventListener("click", closeModal);
-
-    modal.addEventListener("click", (e) => {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
-
+    // Escape key closes any active modal
     document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && modal.classList.contains("active")) {
-            closeModal();
+        if (e.key === "Escape") {
+            if (createModal.classList.contains("active")) {
+                closeCreateModal();
+            }
+            if (editModal.classList.contains("active")) {
+                closeEditModal();
+            }
         }
     });
 }
