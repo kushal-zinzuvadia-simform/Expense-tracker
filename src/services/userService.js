@@ -9,7 +9,7 @@ export function getUsers() {
 
 export function getUserNameById(id) {
     const users = getUsers();
-    const user = users.find(user => user.id === id);
+    const user = users.find(user => user.id == id);
     return user ? user.name : id;
 }
 

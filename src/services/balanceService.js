@@ -30,6 +30,8 @@ export function calculateBalances(expenses) {
     expenses.forEach(exp => {
         const { paidBy, split } = exp;
 
+        if (!Array.isArray(split)) return;
+
         split.forEach(({ userId, amount }) => {
             if (userId === paidBy)
                 return;

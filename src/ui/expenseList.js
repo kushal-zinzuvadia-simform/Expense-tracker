@@ -6,27 +6,24 @@ const emptyState = document.getElementById("empty-state");
 
 let handleEdit = null;
 
-container.addEventListener("click", (e) => {
-    const btn = e.target.closest("button");
-    if (!btn) return;
-    const id = Number(btn.dataset.id);
-});
-
 // Accepts a callback to set Edit mode
 export function initExpenseList({ onEdit }) {
     handleEdit = onEdit;
 
     container.addEventListener("click", (e) => {
-        const id = e.target.dataset.id;
+        const btn = e.target.closest("button");
+        if (!btn) return;
 
-        if (e.target.classList.contains("delete-btn")) {
+        const id = btn.dataset.id;
+
+        if (btn.classList.contains("delete-btn")) {
             deleteExpense(id);
             renderExpenses();
         }
 
-        if (e.target.classList.contains("edit-btn")) {
+        if (btn.classList.contains("edit-btn")) {
             const expense = getExpenses().find(exp => exp.id === id);
-            if (handleEdit) handleEdit(expense);
+            if (handleEdit && expense) handleEdit(expense);
         }
     });
 }
@@ -84,10 +81,12 @@ function createElement(tag, className, text) {
 }
 
 function getSplitNames(splitData) {
+    if (!Array.isArray(splitData)) return "";
+
     const names = [];
     splitData.forEach(split => {
         names.push(getUserNameById(split.userId));
     });
 
-    return names;
+    return names.join(", ");
 }

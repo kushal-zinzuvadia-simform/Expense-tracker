@@ -1,6 +1,5 @@
 import { addExpense, updateExpense } from "../services/expenseService.js";
 import { getUsers } from "../services/userService.js";
-import { renderExpenses } from "./expenseList.js";
 
 const form = document.querySelector(".expense-form");
 const dateInput = document.querySelector("#date");
@@ -16,17 +15,19 @@ const editAmountInput = document.getElementById("edit-amount");
 const editDescriptionInput = document.getElementById("edit-description");
 const editDateInput = document.getElementById("edit-date");
 const editPaidBySelect = document.getElementById("edit-paidBy");
+const editSplitContainer = editModal.querySelector(".split-users");
 
 const toastContainer = document.getElementById("toast-container");
 const amountInput = document.getElementById("amount");
 const descriptionInput = document.getElementById("description");
 const paidBySelect = document.getElementById("paidBy");
-const splitContainer = document.querySelector(".split-users");
+const splitContainer = createModal.querySelector(".split-users");
 
 let editingId = null;
+let onSaveCallback = null;
 
-function getSelectedUsers() {
-    const checkboxes = getCheckboxes();
+function getSelectedUsers(container) {
+    const checkboxes = container.querySelectorAll("input[type='checkbox']");
     return [...checkboxes]
         .filter(cb => cb.checked)
         .map(cb => Number(cb.value));
@@ -42,6 +43,7 @@ function calculateSplit(amount, userIds) {
 }
 
 export function initForm({ onSave }) {
+    onSaveCallback = onSave;
 
     function blockInvalidAmountKeys(e) {
         if (["e", "E", "+", "-"].includes(e.key)) {
@@ -113,7 +115,7 @@ export function initForm({ onSave }) {
     form.addEventListener("submit", (e) => {
         e.preventDefault();
         const current = getToday();
-        const selectedUsers = getSelectedUsers();
+        const selectedUsers = getSelectedUsers(splitContainer);
 
         if (selectedUsers.length < 1) {
             showToast("Select at least one user to split");
@@ -161,7 +163,7 @@ export function initForm({ onSave }) {
         };
 
         addExpense(expense);
-        onSave();
+        if (onSaveCallback) onSaveCallback();
         closeCreateModal();
         form.reset();
         const checkboxes = splitContainer.querySelectorAll("input[type='checkbox']");
@@ -182,6 +184,13 @@ export function initForm({ onSave }) {
         e.preventDefault();
         const current = getToday();
 
+        const selectedUsers = getSelectedUsers(editSplitContainer);
+
+        if (selectedUsers.length < 1) {
+            showToast("Select at least one user to split");
+            return;
+        }
+
         const amount = Number(editAmountInput.value);
         const description = editDescriptionInput.value.trim();
         const paidBy = editPaidBySelect.value;
@@ -196,16 +205,59 @@ export function initForm({ onSave }) {
             return;
         }
 
-        submitBtn.textContent = "Add Expense";
-        dateInput.value = getToday();
+        if (!paidBy) {
+            showToast("Please select who paid for this expense.");
+            return;
+        }
+
+        if (description.length < 3) {
+            showToast("Description must be at least 3 characters.");
+            return;
+        }
+
+        if (description.length > 50) {
+            showToast("Description must not exceed 50 characters.");
+            return;
+        }
+
+        const split = calculateSplit(amount, selectedUsers);
+
+        const updatedExpense = {
+            id: editingId,
+            amount,
+            description,
+            date: editDateInput.value,
+            paidBy,
+            split
+        };
+
+        updateExpense(editingId, updatedExpense);
+        if (onSaveCallback) onSaveCallback();
+        closeEditModal();
+    });
+
+    // Escape key closes modals
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            if (editModal.classList.contains("active")) {
+                closeEditModal();
+            }
+            if (createModal.classList.contains("active")) {
+                closeCreateModal();
+            }
+        }
     });
 }
 
 export function setEditMode(expense) {
     editingId = expense.id;
+
+    // Populate edit modal's paidBy and split checkboxes with current users
+    populateEditModalUsers();
+
     const selectedIds = expense.split.map(s => s.userId);
 
-    const checkboxes = getCheckboxes();
+    const checkboxes = editSplitContainer.querySelectorAll("input[type='checkbox']");
     checkboxes.forEach(cb => {
         cb.checked = selectedIds.includes(Number(cb.value));
     });
@@ -220,8 +272,45 @@ export function setEditMode(expense) {
     editModal.setAttribute("aria-hidden", "false");
 }
 
+function populateEditModalUsers() {
+    const users = getUsers();
+
+    // Populate edit paidBy dropdown
+    editPaidBySelect.replaceChildren();
+
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Select user";
+    editPaidBySelect.appendChild(defaultOption);
+
+    users.forEach(user => {
+        const option = document.createElement("option");
+        option.value = user.id;
+        option.textContent = user.name;
+        editPaidBySelect.appendChild(option);
+    });
+
+    // Populate edit split checkboxes
+    editSplitContainer.replaceChildren();
+
+    users.forEach(user => {
+        const label = document.createElement("label");
+
+        const checkBox = document.createElement("input");
+        checkBox.type = "checkbox";
+        checkBox.value = user.id;
+
+        label.appendChild(checkBox);
+        label.append(` ${user.name}`);
+
+        editSplitContainer.appendChild(label);
+    });
+}
+
 export function renderUserOptions() {
     const users = getUsers();
+
+    // Populate create modal's paidBy dropdown
     paidBySelect.replaceChildren();
 
     const defaultOption = document.createElement("option");
@@ -236,6 +325,7 @@ export function renderUserOptions() {
         paidBySelect.appendChild(option);
     });
 
+    // Populate create modal's split checkboxes
     splitContainer.replaceChildren();
 
     users.forEach(user => {
@@ -250,8 +340,4 @@ export function renderUserOptions() {
 
         splitContainer.appendChild(label);
     });
-}
-
-function getCheckboxes() {
-    return splitContainer.querySelectorAll("input[type='checkbox']");
 }

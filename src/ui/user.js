@@ -9,6 +9,7 @@ const addBtn = document.getElementById("add-user-btn");
 
 export function initUser() {
     renderUserDropdown();
+    renderUserOptions();
 
     addBtn.addEventListener("click", handleAddUser);
     select.addEventListener("change", handleSwitchUser);
