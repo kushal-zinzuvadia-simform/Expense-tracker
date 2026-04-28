@@ -10,7 +10,7 @@ export function initExpenseList({ onEdit }) {
     handleEdit = onEdit;
 
     container.addEventListener("click", (e) => {
-        const id = Number(e.target.dataset.id);
+        const id = e.target.dataset.id;
 
         if (e.target.classList.contains("delete-btn")) {
             deleteExpense(id);

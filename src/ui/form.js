@@ -106,7 +106,7 @@ export function initForm({ onSave }) {
         const current = getToday();
 
         const expense = {
-            id: Date.now(),
+            id: crypto.randomUUID(),
             amount: Number(document.getElementById("amount").value),
             description: document.getElementById("description").value,
             date: dateInput.value,
