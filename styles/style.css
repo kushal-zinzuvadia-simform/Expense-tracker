@@ -25,14 +25,14 @@ body {
     align-items: center;
 }
 
-.nav-users {
+.nav-user {
     display: flex;
     gap: 0.5rem;
     align-items: center;
 }
 
-.nav-users input {
-    width: 120px;
+.nav-user input {
+    width: 140px;
 }
 
 .navbar h1 {
@@ -45,6 +45,29 @@ body {
     font-size: 0.85rem;
     opacity: 0.8;
     margin-top: 0.15rem;
+}
+
+#add-user-btn {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+#add-user-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+#add-user-btn:active {
+    transform: translateY(0);
 }
 
 /* Container */
@@ -375,6 +398,13 @@ button[type="submit"]:hover {
 
 .balance-item:last-child {
     border-bottom: none;
+}
+
+.balance-empty {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    text-align: center;
+    padding: 1rem 0;
 }
 
 /* Amount colors */

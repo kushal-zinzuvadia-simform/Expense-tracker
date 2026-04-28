@@ -14,16 +14,24 @@ export function renderSummary() {
 
     balanceList.replaceChildren();
 
-    // Calculate total spent
-    const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
-    totalSpent.textContent = `₹${total}`;
+    // total share across all expenses
+    let userTotal = 0;
+    expenses.forEach(exp => {
+        if (!Array.isArray(exp.split)) return;
+        exp.split.forEach(s => {
+            if (String(s.userId) === String(activeUserId)) {
+                userTotal += s.amount;
+            }
+        });
+    });
+    totalSpent.textContent = `₹${userTotal}`;
 
     // What the active user owes others
     const owes = balances[activeUserId] || {};
     let redTotal = 0;
 
     for (const [lender, amount] of Object.entries(owes)) {
-        const lenderName = getUserNameById(isNaN(lender) ? lender : Number(lender));
+        const lenderName = getUserNameById(lender);
         const statement = `${activeUserName} owes ${lenderName}`;
 
         const item = document.createElement("div");
@@ -45,11 +53,11 @@ export function renderSummary() {
     let greenTotal = 0;
 
     for (const [borrower, lenders] of Object.entries(balances)) {
-        if (borrower === activeUserId || borrower === String(activeUserId)) continue;
+        if (String(borrower) === String(activeUserId)) continue;
 
         for (const [lender, amount] of Object.entries(lenders)) {
-            if (lender === String(activeUserId) || lender === activeUserId) {
-                const borrowerName = getUserNameById(isNaN(borrower) ? borrower : Number(borrower));
+            if (String(lender) === String(activeUserId)) {
+                const borrowerName = getUserNameById(borrower);
                 const statement = `${borrowerName} owes ${activeUserName}`;
 
                 const item = document.createElement("div");
@@ -67,6 +75,14 @@ export function renderSummary() {
                 balanceList.appendChild(item);
             }
         }
+    }
+
+    // Show empty message when no balance items
+    if (redTotal === 0 && greenTotal === 0) {
+        const emptyMsg = document.createElement("p");
+        emptyMsg.className = "balance-empty";
+        emptyMsg.textContent = "Add expenses to see who owes whom.";
+        balanceList.appendChild(emptyMsg);
     }
 
     youOwe.textContent = `₹${redTotal}`;
