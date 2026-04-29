@@ -22,7 +22,7 @@
         </div>
 
         <div class="nav-user">
-            <label>Select active user: </label>
+            <label for="active-user-select">Select active user: </label>
             <select id="active-user-select">
                 <option value="">Select Active user</option>
             </select>
@@ -85,7 +85,7 @@
     </main>
 
     <!-- Create Expense Modal -->
-    <div id="create-modal" class="modal-overlay" aria-hidden="true">
+    <div id="create-modal" class="modal-overlay" hidden>
         <div class="modal">
             <h2>Add Expense</h2>
             <form class="expense-form">
@@ -130,7 +130,7 @@
     </div>
 
     <!-- Edit Expense Modal -->
-    <div id="edit-modal" class="modal-overlay" aria-hidden="true">
+    <div id="edit-modal" class="modal-overlay" hidden>
         <div class="modal">
             <h2>Edit Expense</h2>
             <form id="edit-expense-form" class="expense-form">

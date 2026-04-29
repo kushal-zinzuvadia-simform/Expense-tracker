@@ -1,11 +1,14 @@
 export function openModal(modal) {
     modal.classList.add("active");
     modal.setAttribute("aria-hidden", "false");
+    modal.hidden = false;
+    document.getElementById("amount").focus();
 }
 
 export function closeModal(modal) {
     modal.classList.remove("active");
     modal.setAttribute("aria-hidden", "true");
+    modal.hidden = true;
 }
 
 export function initModalKeyboardHandlers(modals) {

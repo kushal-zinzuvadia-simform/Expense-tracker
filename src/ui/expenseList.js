@@ -1,5 +1,6 @@
 import { deleteExpense, getExpenses } from "../services/expenseService.js";
 import { getUserNameById } from "../services/userService.js";
+import { renderSummary } from "./summary.js";
 
 const container = document.querySelector(".expense-items");
 const emptyState = document.getElementById("empty-state");
@@ -19,6 +20,7 @@ export function initExpenseList({ onEdit }) {
         if (btn.classList.contains("delete-btn")) {
             deleteExpense(id);
             renderExpenses();
+            renderSummary();
         }
 
         if (btn.classList.contains("edit-btn")) {
