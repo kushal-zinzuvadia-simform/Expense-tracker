@@ -42,6 +42,34 @@ function calculateSplit(amount, userIds) {
     }));
 }
 
+function validateExpenseForm(amount, description, date, paidBy, selectedUsers, currentDate) {
+    if (selectedUsers.length < 1) {
+        return { valid: false, message: "Select at least one user to split" };
+    }
+
+    if (!amount || amount <= 0) {
+        return { valid: false, message: "Amount must be a positive number." };
+    }
+
+    if (date > currentDate) {
+        return { valid: false, message: "Future dates are not allowed." };
+    }
+
+    if (!paidBy) {
+        return { valid: false, message: "Please select who paid for this expense." };
+    }
+
+    if (description.length < 3) {
+        return { valid: false, message: "Description must be at least 3 characters." };
+    }
+
+    if (description.length > 50) {
+        return { valid: false, message: "Description must not exceed 50 characters." };
+    }
+
+    return { valid: true };
+}
+
 export function initForm({ onSave }) {
     onSaveCallback = onSave;
 
@@ -117,37 +145,13 @@ export function initForm({ onSave }) {
         const current = getToday();
         const selectedUsers = getSelectedUsers(splitContainer);
 
-        if (selectedUsers.length < 1) {
-            showToast("Select at least one user to split");
-            return;
-        }
-
         const amount = Number(amountInput.value);
         const description = descriptionInput.value.trim();
         const paidBy = paidBySelect.value;
 
-        if (!amount || amount <= 0) {
-            showToast("Amount must be a positive number.");
-            return;
-        }
-
-        if (dateInput.value > current) {
-            showToast("Future dates are not allowed.");
-            return;
-        }
-
-        if (!paidBy) {
-            showToast("Please select who paid for this expense.");
-            return;
-        }
-
-        if (description.length < 3) {
-            showToast("Description must be at least 3 characters.");
-            return;
-        }
-
-        if (description.length > 50) {
-            showToast("Description must not exceed 50 characters.");
+        const validation = validateExpenseForm(amount, description, dateInput.value, paidBy, selectedUsers, current);
+        if (!validation.valid) {
+            showToast(validation.message);
             return;
         }
 
@@ -186,37 +190,13 @@ export function initForm({ onSave }) {
 
         const selectedUsers = getSelectedUsers(editSplitContainer);
 
-        if (selectedUsers.length < 1) {
-            showToast("Select at least one user to split");
-            return;
-        }
-
         const amount = Number(editAmountInput.value);
         const description = editDescriptionInput.value.trim();
         const paidBy = editPaidBySelect.value;
 
-        if (!amount || amount <= 0) {
-            showToast("Amount must be a positive number.");
-            return;
-        }
-
-        if (editDateInput.value > current) {
-            showToast("Future dates are not allowed.");
-            return;
-        }
-
-        if (!paidBy) {
-            showToast("Please select who paid for this expense.");
-            return;
-        }
-
-        if (description.length < 3) {
-            showToast("Description must be at least 3 characters.");
-            return;
-        }
-
-        if (description.length > 50) {
-            showToast("Description must not exceed 50 characters.");
+        const validation = validateExpenseForm(amount, description, editDateInput.value, paidBy, selectedUsers, current);
+        if (!validation.valid) {
+            showToast(validation.message);
             return;
         }
 
