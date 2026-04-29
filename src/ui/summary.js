@@ -6,7 +6,6 @@ export function renderSummary() {
     const expenses = getExpenses();
     const balances = calculateBalances(expenses);
     const activeUserId = getActiveUser();
-    const activeUserName = getUserNameById(activeUserId);
     const balanceList = document.querySelector(".balance-list");
     const totalSpent = document.querySelector(".total-spent");
     const youOwe = document.querySelector(".you-owe");
@@ -30,9 +29,11 @@ export function renderSummary() {
     const owes = balances[activeUserId] || {};
     let redTotal = 0;
 
+    const displayName = (userId) => userId === activeUserId ? "You" : getUserNameById(userId);
+
     for (const [lender, amount] of Object.entries(owes)) {
-        const lenderName = getUserNameById(lender);
-        const statement = `${activeUserName} owes ${lenderName}`;
+        const lenderName = displayName(lender);
+        const statement = `You owe ${lenderName}`;
 
         const item = document.createElement("div");
         item.className = "balance-item";
@@ -57,8 +58,8 @@ export function renderSummary() {
 
         for (const [lender, amount] of Object.entries(lenders)) {
             if (lender === activeUserId) {
-                const borrowerName = getUserNameById(borrower);
-                const statement = `${borrowerName} owes ${activeUserName}`;
+                const borrowerName = displayName(borrower);
+                const statement = `${borrowerName} owes You`;
 
                 const item = document.createElement("div");
                 item.className = "balance-item";
