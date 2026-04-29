@@ -1,5 +1,9 @@
 import { addExpense, updateExpense } from "../services/expenseService.js";
 import { getUsers } from "../services/userService.js";
+import { openModal, closeModal, initModalKeyboardHandlers } from "./modal.js";
+import { showToast } from "./toast.js";
+import { validateExpenseForm } from "./validation.js";
+import { getToday } from "./utils.js";
 
 const form = document.querySelector(".expense-form");
 const dateInput = document.querySelector("#date");
@@ -17,7 +21,6 @@ const editDateInput = document.getElementById("edit-date");
 const editPaidBySelect = document.getElementById("edit-paidBy");
 const editSplitContainer = editModal.querySelector(".split-users");
 
-const toastContainer = document.getElementById("toast-container");
 const amountInput = document.getElementById("amount");
 const descriptionInput = document.getElementById("description");
 const paidBySelect = document.getElementById("paidBy");
@@ -42,34 +45,6 @@ function calculateSplit(amount, userIds) {
     }));
 }
 
-function validateExpenseForm(amount, description, date, paidBy, selectedUsers, currentDate) {
-    if (selectedUsers.length < 2) {
-        return { valid: false, message: "Select at least two users to split" };
-    }
-
-    if (!amount || amount <= 0) {
-        return { valid: false, message: "Amount must be a positive number." };
-    }
-
-    if (date > currentDate) {
-        return { valid: false, message: "Future dates are not allowed." };
-    }
-
-    if (!paidBy) {
-        return { valid: false, message: "Please select who paid for this expense." };
-    }
-
-    if (description.length < 3) {
-        return { valid: false, message: "Description must be at least 3 characters." };
-    }
-
-    if (description.length > 50) {
-        return { valid: false, message: "Description must not exceed 50 characters." };
-    }
-
-    return { valid: true };
-}
-
 export function initForm({ onSave }) {
     onSaveCallback = onSave;
 
@@ -77,32 +52,6 @@ export function initForm({ onSave }) {
         if (["e", "E", "+", "-"].includes(e.key)) {
             e.preventDefault();
         }
-    }
-
-    function getToday() {
-        return new Date().toISOString().split("T")[0];
-    }
-
-    function showToast(message) {
-        const toast = document.createElement("div");
-        toast.className = "toast";
-        toast.textContent = message;
-        toastContainer.appendChild(toast);
-
-        setTimeout(() => {
-            toast.classList.add("toast-out");
-            toast.addEventListener("animationend", () => toast.remove());
-        }, 3000);
-    }
-
-    function openModal(modal) {
-        modal.classList.add("active");
-        modal.setAttribute("aria-hidden", "false");
-    }
-
-    function closeModal(modal) {
-        modal.classList.remove("active");
-        modal.setAttribute("aria-hidden", "true");
     }
 
     function openCreateModal() {
@@ -216,17 +165,8 @@ export function initForm({ onSave }) {
         closeEditModal();
     });
 
-    // Escape key closes modals
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-            if (editModal.classList.contains("active")) {
-                closeEditModal();
-            }
-            if (createModal.classList.contains("active")) {
-                closeCreateModal();
-            }
-        }
-    });
+    // Initialize modal keyboard handlers
+    initModalKeyboardHandlers([createModal, editModal]);
 }
 
 export function setEditMode(expense) {
@@ -245,7 +185,7 @@ export function setEditMode(expense) {
     editAmountInput.value = expense.amount;
     editDescriptionInput.value = expense.description;
     editDateInput.value = expense.date;
-    editDateInput.max = new Date().toISOString().split("T")[0];
+    editDateInput.max = getToday();
     editPaidBySelect.value = expense.paidBy;
 
     editModal.classList.add("active");
