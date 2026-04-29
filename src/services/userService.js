@@ -9,13 +9,13 @@ export function getUsers() {
 
 export function getUserNameById(id) {
     const users = getUsers();
-    const user = users.find(user => String(user.id) === String(id));
+    const user = users.find(user => user.id === id);
     return user ? user.name : id;
 }
 
 export function addUser(name) {
     const user = {
-        id: Date.now(),
+        id: crypto.randomUUID(),
         name
     };
 

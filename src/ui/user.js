@@ -53,7 +53,7 @@ function handleAddUser() {
 }
 
 function handleSwitchUser(e) {
-    const userId = Number(e.target.value);
+    const userId = e.target.value;
 
     if (!userId)
         return;

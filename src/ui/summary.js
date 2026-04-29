@@ -19,7 +19,7 @@ export function renderSummary() {
     expenses.forEach(exp => {
         if (!Array.isArray(exp.split)) return;
         exp.split.forEach(s => {
-            if (String(s.userId) === String(activeUserId)) {
+            if (s.userId === activeUserId) {
                 userTotal += s.amount;
             }
         });
@@ -53,10 +53,10 @@ export function renderSummary() {
     let greenTotal = 0;
 
     for (const [borrower, lenders] of Object.entries(balances)) {
-        if (String(borrower) === String(activeUserId)) continue;
+        if (borrower === activeUserId) continue;
 
         for (const [lender, amount] of Object.entries(lenders)) {
-            if (String(lender) === String(activeUserId)) {
+            if (lender === activeUserId) {
                 const borrowerName = getUserNameById(borrower);
                 const statement = `${borrowerName} owes ${activeUserName}`;
 

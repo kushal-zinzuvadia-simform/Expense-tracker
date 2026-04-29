@@ -30,7 +30,7 @@ function getSelectedUsers(container) {
     const checkboxes = container.querySelectorAll("input[type='checkbox']");
     return [...checkboxes]
         .filter(cb => cb.checked)
-        .map(cb => Number(cb.value));
+        .map(cb => cb.value);
 }
 
 function calculateSplit(amount, userIds) {
@@ -259,7 +259,7 @@ export function setEditMode(expense) {
 
     const checkboxes = editSplitContainer.querySelectorAll("input[type='checkbox']");
     checkboxes.forEach(cb => {
-        cb.checked = selectedIds.includes(Number(cb.value));
+        cb.checked = selectedIds.includes(cb.value);
     });
 
     editAmountInput.value = expense.amount;
