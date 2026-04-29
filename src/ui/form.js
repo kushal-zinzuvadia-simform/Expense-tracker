@@ -43,8 +43,8 @@ function calculateSplit(amount, userIds) {
 }
 
 function validateExpenseForm(amount, description, date, paidBy, selectedUsers, currentDate) {
-    if (selectedUsers.length < 1) {
-        return { valid: false, message: "Select at least one user to split" };
+    if (selectedUsers.length < 2) {
+        return { valid: false, message: "Select at least two users to split" };
     }
 
     if (!amount || amount <= 0) {
@@ -169,7 +169,7 @@ export function initForm({ onSave }) {
         addExpense(expense);
         if (onSaveCallback) onSaveCallback();
         closeCreateModal();
-        form.reset();
+
         const checkboxes = splitContainer.querySelectorAll("input[type='checkbox']");
         checkboxes.forEach(cb => cb.checked = false);
     });
@@ -233,7 +233,7 @@ export function setEditMode(expense) {
     editingId = expense.id;
 
     // Populate edit modal's paidBy and split checkboxes with current users
-    populateEditModalUsers();
+    populateUserControls(editPaidBySelect, editSplitContainer);
 
     const selectedIds = expense.split.map(s => s.userId);
 
@@ -252,26 +252,26 @@ export function setEditMode(expense) {
     editModal.setAttribute("aria-hidden", "false");
 }
 
-function populateEditModalUsers() {
+function populateUserControls(selectEl, checkboxContainer) {
     const users = getUsers();
 
-    // Populate edit paidBy dropdown
-    editPaidBySelect.replaceChildren();
+    // Populate select dropdown
+    selectEl.replaceChildren();
 
     const defaultOption = document.createElement("option");
     defaultOption.value = "";
     defaultOption.textContent = "Select user";
-    editPaidBySelect.appendChild(defaultOption);
+    selectEl.appendChild(defaultOption);
 
     users.forEach(user => {
         const option = document.createElement("option");
         option.value = user.id;
         option.textContent = user.name;
-        editPaidBySelect.appendChild(option);
+        selectEl.appendChild(option);
     });
 
-    // Populate edit split checkboxes
-    editSplitContainer.replaceChildren();
+    // Populate checkboxes
+    checkboxContainer.replaceChildren();
 
     users.forEach(user => {
         const label = document.createElement("label");
@@ -283,41 +283,10 @@ function populateEditModalUsers() {
         label.appendChild(checkBox);
         label.append(` ${user.name}`);
 
-        editSplitContainer.appendChild(label);
+        checkboxContainer.appendChild(label);
     });
 }
 
 export function renderUserOptions() {
-    const users = getUsers();
-
-    // Populate create modal's paidBy dropdown
-    paidBySelect.replaceChildren();
-
-    const defaultOption = document.createElement("option");
-    defaultOption.value = "";
-    defaultOption.textContent = "Select user";
-    paidBySelect.appendChild(defaultOption);
-
-    users.forEach(user => {
-        const option = document.createElement("option");
-        option.value = user.id;
-        option.textContent = user.name;
-        paidBySelect.appendChild(option);
-    });
-
-    // Populate create modal's split checkboxes
-    splitContainer.replaceChildren();
-
-    users.forEach(user => {
-        const label = document.createElement("label");
-
-        const checkBox = document.createElement("input");
-        checkBox.type = "checkbox";
-        checkBox.value = user.id;
-
-        label.appendChild(checkBox);
-        label.append(` ${user.name}`);
-
-        splitContainer.appendChild(label);
-    });
+    populateUserControls(paidBySelect, splitContainer);
 }
