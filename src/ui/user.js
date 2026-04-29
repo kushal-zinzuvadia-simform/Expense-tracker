@@ -2,6 +2,7 @@ import { addUser, getActiveUser, getUsers, setActiveUser } from "../services/use
 import { renderExpenses } from "./expenseList.js";
 import { renderUserOptions } from "./form.js";
 import { renderSummary } from "./summary.js";
+import { showToast } from "./toast.js";
 
 const select = document.getElementById("active-user-select");
 const input = document.getElementById("new-user-input");
@@ -44,6 +45,12 @@ function handleAddUser() {
 
     if (!name)
         return;
+
+    const users = getUsers();
+    if (users.some(user => user.name.toLowerCase() === name.toLowerCase())) {
+        showToast("User already exists.");
+        return;
+    }
 
     addUser(name);
     input.value = "";

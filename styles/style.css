@@ -215,10 +215,18 @@ select:focus {
     letter-spacing: normal;
     font-weight: 400;
     transition: background 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .split-users label:hover {
     background: #e5e7eb;
+}
+
+.split-users input[type="checkbox"] {
+    margin: 0;
+    accent-color: #4f46e5;
 }
 
 .form-actions {
@@ -551,5 +559,15 @@ button[type="submit"]:hover {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.75rem;
+    }
+
+    .modal {
+        padding: 1.5rem;
+        width: min(95%, 480px);
+    }
+
+    .modal h2 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
     }
 }

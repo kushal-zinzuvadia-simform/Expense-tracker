@@ -1,5 +1,5 @@
 import { deleteExpense, getExpenses } from "../services/expenseService.js";
-import { getUserNameById } from "../services/userService.js";
+import { getUserNameById, getActiveUser } from "../services/userService.js";
 import { renderSummary } from "./summary.js";
 
 const container = document.querySelector(".expense-items");
@@ -32,15 +32,22 @@ export function initExpenseList({ onEdit }) {
 
 export function renderExpenses() {
     const expenses = getExpenses();
+    const activeUserId = getActiveUser();
+
+    // Filter expenses where active user is involved
+    const filteredExpenses = activeUserId ? expenses.filter(exp =>
+        exp.paidBy === activeUserId || exp.split.some(s => s.userId === activeUserId)
+    ) : expenses;
+
     container.replaceChildren();
 
-    if (expenses.length === 0) {
+    if (filteredExpenses.length === 0) {
         emptyState.classList.remove("hidden");
     } else {
         emptyState.classList.add("hidden");
     }
 
-    expenses.forEach(exp => {
+    filteredExpenses.forEach(exp => {
         const card = createExpenseCard(exp);
         container.appendChild(card);
     });
