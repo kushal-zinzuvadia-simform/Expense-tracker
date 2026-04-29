@@ -65,10 +65,6 @@ export function initForm({ onSave }) {
         form.reset();
     }
 
-    function openEditModal() {
-        openModal(editModal);
-    }
-
     function closeEditModal() {
         closeModal(editModal);
         editingId = null;

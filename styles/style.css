@@ -47,7 +47,7 @@ body {
     margin-top: 0.15rem;
 }
 
-#add-user-btn {
+.user-btn {
     padding: 0.5rem 1rem;
     background: rgba(255, 255, 255, 0.15);
     color: white;
@@ -60,13 +60,13 @@ body {
     transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
 }
 
-#add-user-btn:hover {
+.user-btn:hover {
     background: rgba(255, 255, 255, 0.25);
     border-color: rgba(255, 255, 255, 0.5);
     transform: translateY(-1px);
 }
 
-#add-user-btn:active {
+.user-btn:active {
     transform: translateY(0);
 }
 

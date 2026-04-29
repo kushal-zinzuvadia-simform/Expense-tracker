@@ -49,7 +49,7 @@ function handleAddUser() {
     input.value = "";
 
     renderUserDropdown();
-    renderUserOptions()
+    renderUserOptions();
 }
 
 function handleSwitchUser(e) {
