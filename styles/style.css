@@ -159,12 +159,14 @@ body {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
+    min-width: 0;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
+    min-width: 0;
 }
 
 .form-group label {
@@ -202,6 +204,7 @@ select:focus {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    min-width: 0;
 }
 
 .split-users label {
@@ -453,6 +456,7 @@ button[type="submit"]:hover {
     width: min(92%, 520px);
     max-height: 90vh;
     overflow-y: auto;
+    overflow-x: hidden;
     box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
     transform: scale(0.92) translateY(20px);
     transition: transform 0.25s ease;
