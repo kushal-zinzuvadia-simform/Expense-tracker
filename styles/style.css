@@ -435,18 +435,19 @@ button[type="submit"]:hover {
     inset: 0;
     background: rgba(0, 0, 0, 0.45);
     backdrop-filter: blur(6px);
-    display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s ease;
+    display: none;
 }
 
 .modal-overlay.active {
     opacity: 1;
     pointer-events: auto;
+    display: flex;
 }
 
 .modal {
@@ -537,10 +538,72 @@ button[type="submit"]:hover {
     }
 }
 
-/* Responsive */
+/* Responsiveness */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 1rem 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .nav-user {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .nav-user input {
+        width: 120px;
+    }
+
+    .navbar h1 {
+        font-size: 1.375rem;
+    }
+
+    .navbar-tagline {
+        font-size: 0.8rem;
+    }
+
+    .container {
+        padding: 1.25rem 1.5rem 2rem;
+    }
+
+    .summary-container {
+        grid-template-columns: 1fr;
+    }
+
+    .modal {
+        padding: 1.75rem;
+        width: min(90%, 500px);
+    }
+}
+
 @media (max-width: 640px) {
     .navbar {
         padding: 1rem 1.25rem;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .nav-user {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .nav-user input {
+        width: 100%;
+    }
+
+    .navbar h1 {
+        font-size: 1.25rem;
+        text-align: center;
+    }
+
+    .navbar-tagline {
+        font-size: 0.75rem;
+        text-align: center;
     }
 
     .container {
@@ -573,5 +636,33 @@ button[type="submit"]:hover {
     .modal h2 {
         font-size: 1.1rem;
         margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        padding: 0.75rem 1rem;
+    }
+
+    .navbar h1 {
+        font-size: 1.125rem;
+    }
+
+    .navbar-tagline {
+        display: none;
+    }
+
+    .container {
+        padding: 0.75rem 1rem 1.5rem;
+    }
+
+    .modal {
+        padding: 1.25rem;
+        width: min(95%, 400px);
+    }
+
+    .modal h2 {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
     }
 }
