@@ -57,7 +57,7 @@ export function initForm({ onSave }) {
     function openCreateModal() {
         dateInput.value = getToday();
         dateInput.max = getToday();
-        openModal(createModal);
+        openModal(createModal, amountInput);
     }
 
     function closeCreateModal() {

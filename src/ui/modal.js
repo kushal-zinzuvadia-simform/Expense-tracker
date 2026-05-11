@@ -1,6 +1,6 @@
-export function openModal(modal) {
+export function openModal(modal, focusElement) {
     modal.classList.add("active");
-    document.getElementById("amount").focus();
+    focusElement?.focus();
 }
 
 export function closeModal(modal) {
