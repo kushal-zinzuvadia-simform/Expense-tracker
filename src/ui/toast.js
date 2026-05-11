@@ -17,6 +17,9 @@ export function showToast(message) {
 
     setTimeout(() => {
         toast.classList.add("toast-out");
-        toast.addEventListener("animationend", () => toast.remove());
+        const cleanup = () => toast.remove();
+        toast.addEventListener("animationend", cleanup, { once: true });
+        // Fallback in case animationend never fires
+        setTimeout(cleanup, 500);
     }, 3000);
 }

@@ -23,7 +23,7 @@ export function renderSummary() {
             }
         });
     });
-    totalSpent.textContent = `₹${userTotal}`;
+    totalSpent.textContent = `₹${userTotal.toFixed(2)}`;
 
     // What the active user owes others
     const owes = balances[activeUserId] || {};
@@ -86,6 +86,6 @@ export function renderSummary() {
         balanceList.appendChild(emptyMsg);
     }
 
-    youOwe.textContent = `₹${redTotal}`;
-    youAreOwed.textContent = `₹${greenTotal}`;
+    youOwe.textContent = `₹${redTotal.toFixed(2)}`;
+    youAreOwed.textContent = `₹${greenTotal.toFixed(2)}`;
 }

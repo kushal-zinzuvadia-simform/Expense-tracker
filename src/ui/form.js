@@ -114,9 +114,6 @@ export function initForm({ onSave }) {
         addExpense(expense);
         if (onSaveCallback) onSaveCallback();
         closeCreateModal();
-
-        const checkboxes = splitContainer.querySelectorAll("input[type='checkbox']");
-        checkboxes.forEach(cb => cb.checked = false);
     });
 
     // Edit modal controls
