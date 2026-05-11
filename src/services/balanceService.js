@@ -1,10 +1,9 @@
 function simplifyBalances(balances) {
     const simplified = {};
 
-    for (const borrower in balances) {
-        for (const lender in balances[borrower]) {
+    for (const [borrower, lenders] of Object.entries(balances)) {
+        for (const [lender, amount] of Object.entries(lenders)) {
 
-            const amount = balances[borrower][lender];
             const reverse = balances[lender]?.[borrower] || 0;
 
             if (amount > reverse) {
@@ -43,6 +42,7 @@ export function calculateBalances(expenses) {
                 balances[userId][paidBy] = 0;
 
             balances[userId][paidBy] += amount;
+            balances[userId][paidBy] = Number(balances[userId][paidBy].toFixed(2));
         });
     });
 
