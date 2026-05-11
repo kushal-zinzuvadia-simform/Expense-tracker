@@ -169,7 +169,7 @@ export function setEditMode(expense) {
     // Populate edit modal's paidBy and split checkboxes with current users
     populateUserControls(editPaidBySelect, editSplitContainer);
 
-    const selectedIds = expense.split.map(s => s.userId);
+    const selectedIds = expense.split?.map(s => s.userId) || [];
 
     const checkboxes = editSplitContainer.querySelectorAll("input[type='checkbox']");
     checkboxes.forEach(cb => {

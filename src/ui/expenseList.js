@@ -36,7 +36,7 @@ export function renderExpenses() {
 
     // Filter expenses where active user is involved
     const filteredExpenses = activeUserId ? expenses.filter(exp =>
-        exp.paidBy === activeUserId || exp.split.some(s => s.userId === activeUserId)
+        exp.paidBy === activeUserId || exp.split?.some(s => s.userId === activeUserId)
     ) : expenses;
 
     container.replaceChildren();
