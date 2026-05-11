@@ -46,6 +46,11 @@ function handleAddUser() {
     if (!name)
         return;
 
+    if (name.length < 2 || name.length > 30) {
+        showToast("User name must be between 2 and 30 characters.");
+        return;
+    }
+
     const users = getUsers();
     if (users.some(user => user.name.toLowerCase() === name.toLowerCase())) {
         showToast("User already exists.");
