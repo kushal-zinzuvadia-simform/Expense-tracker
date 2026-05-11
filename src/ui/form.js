@@ -37,11 +37,12 @@ function getSelectedUsers(container) {
 }
 
 function calculateSplit(amount, userIds) {
-    const splitAmount = amount / userIds.length;
+    const splitAmount = Number((amount / userIds.length).toFixed(2));
+    const remainder = Number((amount - splitAmount * userIds.length).toFixed(2));
 
-    return userIds.map(userId => ({
+    return userIds.map((userId, index) => ({
         userId,
-        amount: Number(splitAmount.toFixed(2))
+        amount: index === userIds.length - 1 ? splitAmount + remainder : splitAmount
     }));
 }
 
