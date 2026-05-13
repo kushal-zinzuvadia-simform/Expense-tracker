@@ -6,13 +6,21 @@
     box-sizing: border-box;
 }
 
+html,
+body {
+    height: 100%;
+}
+
 body {
     width: 100%;
     min-height: 100vh;
-    overflow: auto;
+    overflow: hidden;
     font-family: 'Inter', Arial, Helvetica, sans-serif;
     background: #f5f5f7;
     color: #1d1d1f;
+
+    display: flex;
+    flex-direction: column;
 }
 
 /* Navbar */
@@ -23,6 +31,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .nav-user {
@@ -208,17 +217,29 @@ body {
 
 /* Container */
 .container {
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    padding: 1.5rem 2rem 3rem;
+    padding: 1.5rem 3rem;
     max-width: 900px;
+    width: 100%;
     margin: 0 auto;
+    min-height: 0;
+    overflow: hidden;
 }
 
 /* Sections */
-#create-expense,
+#create-expense {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: 0;
+}
+
 #summary-section {
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -396,10 +417,13 @@ button[type="submit"]:hover {
 
 /* Expense Cards */
 .expense-items {
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
     overflow-y: auto;
+    min-height: 0;
+    padding-right: 0.25rem;
 }
 
 .expense-card {
