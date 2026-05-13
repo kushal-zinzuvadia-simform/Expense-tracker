@@ -53,7 +53,7 @@ export function renderSummary() {
 
         const itemAmount = document.createElement("span");
         itemAmount.className = "amount negative";
-        itemAmount.textContent = `₹${amount}`;
+        itemAmount.textContent = `₹${Number(amount).toFixed(2)}`;
         redTotal += amount;
 
         item.append(spanItem, itemAmount);

@@ -13,20 +13,20 @@ const userMenu = document.querySelector(".user-menu");
 const userDropdown = document.querySelector(".user-dropdown");
 const activeUserName = document.querySelector(".user-name");
 
-profileBtn?.addEventListener("click", (e) => {
-    e.stopPropagation();
-    userMenu?.classList.toggle("active");
-});
-
-document.addEventListener("click", (e) => {
-    if (!userDropdown?.contains(e.target)) {
-        userMenu?.classList.remove("active");
-    }
-});
-
 export function initUser() {
     renderUserDropdown();
     renderUserOptions();
+
+    profileBtn?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        userMenu?.classList.toggle("active");
+    });
+
+    document.addEventListener("click", (e) => {
+        if (!userDropdown?.contains(e.target)) {
+            userMenu?.classList.remove("active");
+        }
+    });
 
     addBtn.addEventListener("click", handleAddUser);
     select.addEventListener("change", handleSwitchUser);

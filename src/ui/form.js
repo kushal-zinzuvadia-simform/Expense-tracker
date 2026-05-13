@@ -182,8 +182,7 @@ export function setEditMode(expense) {
     editDateInput.max = getToday();
     editPaidBySelect.value = expense.paidBy;
 
-    editModal.classList.add("active");
-    editModal.setAttribute("aria-hidden", "false");
+    openModal(editModal, editAmountInput);
 }
 
 function populateUserControls(selectEl, checkboxContainer) {

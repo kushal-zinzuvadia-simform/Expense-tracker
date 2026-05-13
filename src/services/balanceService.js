@@ -10,7 +10,7 @@ function simplifyBalances(balances) {
                 if (!simplified[borrower]) {
                     simplified[borrower] = {};
                 }
-                simplified[borrower][lender] = amount - reverse;
+                simplified[borrower][lender] = Number((amount - reverse).toFixed(2));
             }
         }
     }
