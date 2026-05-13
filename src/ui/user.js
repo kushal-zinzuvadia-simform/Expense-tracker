@@ -71,8 +71,15 @@ function handleAddUser() {
     if (!name)
         return;
 
-    if (name.length < 2 || name.length > 30) {
-        showToast("User name must be between 2 and 30 characters.");
+    if (name.length < 2 || name.length > 20) {
+        showToast("User name must be between 2 and 20 characters.");
+        return;
+    }
+
+    const validNamePattern = /[a-zA-Z]/;
+
+    if (!validNamePattern.test(name)) {
+        showToast("Enter valid User name.");
         return;
     }
 

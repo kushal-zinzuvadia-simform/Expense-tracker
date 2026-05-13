@@ -7,11 +7,21 @@ export function renderSummary() {
     const balances = calculateBalances(expenses);
     const activeUserId = getActiveUser();
     const balanceList = document.querySelector(".balance-list");
-    const totalSpent = document.querySelector(".total-spent");
+    const totalPaid = document.querySelector(".total-paid");
+    const totalSplit = document.querySelector(".total-split");
     const youOwe = document.querySelector(".you-owe");
     const youAreOwed = document.querySelector(".you-owed");
 
     balanceList.replaceChildren();
+
+    // Expense amount total paidBy active user 
+    let totalSpent = 0;
+    expenses.forEach(exp => {
+        if (exp.paidBy === activeUserId) {
+            totalSpent += exp.amount;
+        }
+    });
+    totalPaid.textContent = `₹${totalSpent.toFixed(2)}`;
 
     // total share across all expenses
     let userTotal = 0;
@@ -23,7 +33,7 @@ export function renderSummary() {
             }
         });
     });
-    totalSpent.textContent = `₹${userTotal.toFixed(2)}`;
+    totalSplit.textContent = `₹${userTotal.toFixed(2)}`;
 
     // What the active user owes others
     const owes = balances[activeUserId] || {};

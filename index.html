@@ -56,13 +56,14 @@
                 <button type="button" id="open-create-btn">+ New Expense</button>
             </div>
 
-            <div class="expense-items">
-                <!-- Dynamic expense cards -->
-            </div>
             <div class="empty-state" id="empty-state">
                 <span class="empty-state-icon">📋</span>
                 <p>No expenses yet</p>
                 <p class="empty-state-hint">Click "New Expense" to get started</p>
+            </div>
+
+            <div class="expense-items">
+                <!-- Dynamic expense cards -->
             </div>
         </section>
 
@@ -73,7 +74,8 @@
 
                 <div class="summary-card">
                     <h3>Overview</h3>
-                    <p>Your Total Share: <span class="total-spent">₹0</span></p>
+                    <p>Total Spent: <span class="total-paid">₹0</span></p>
+                    <p>Total Splits: <span class="total-split">₹0</span></p>
                     <p>You Owe: <span class="you-owe amount negative">₹0</span></p>
                     <p>You are Owed: <span class="you-owed amount positive">₹0</span></p>
                 </div>
