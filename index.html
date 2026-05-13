@@ -21,16 +21,31 @@
             <p class="navbar-tagline">Split expenses, settle up easily</p>
         </div>
 
-        <div class="nav-user">
-            <label for="active-user-select">Select active user: </label>
-            <select id="active-user-select">
-                <option value="">Select Active user</option>
-            </select>
-        </div>
+        <div class="user-dropdown">
+            <div class="user-profile">
+                <button type="button">
+                    <img src="./src/assets/user.png" alt="User profile">
+                    <span class="user-name"></span>
+                </button>
+            </div>
 
-        <div class="nav-user">
-            <input type="text" id="new-user-input" placeholder="Enter user name">
-            <button id="add-user-btn" class="user-btn">Add User</button>
+            <div class="user-menu">
+                <div class="nav-user">
+                    <label for="active-user-select">Select active user: </label>
+
+                    <select id="active-user-select">
+                        <option value="">Select Active user</option>
+                    </select>
+                </div>
+
+                <hr class="partition">
+
+                <div class="nav-user">
+                    <input type="text" id="new-user-input" placeholder="Add a new user">
+
+                    <button id="add-user-btn" class="user-btn">+</button>
+                </div>
+            </div>
         </div>
     </header>
 

@@ -1,4 +1,4 @@
-import { addUser, getActiveUser, getUsers, setActiveUser } from "../services/userService.js"
+import { addUser, getActiveUser, getUserNameById, getUsers, setActiveUser } from "../services/userService.js"
 import { renderExpenses } from "./expenseList.js";
 import { renderUserOptions } from "./form.js";
 import { renderSummary } from "./summary.js";
@@ -7,6 +7,22 @@ import { showToast } from "./toast.js";
 const select = document.getElementById("active-user-select");
 const input = document.getElementById("new-user-input");
 const addBtn = document.getElementById("add-user-btn");
+
+const profileBtn = document.querySelector(".user-profile button");
+const userMenu = document.querySelector(".user-menu");
+const userDropdown = document.querySelector(".user-dropdown");
+const activeUserName = document.querySelector(".user-name");
+
+profileBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    userMenu?.classList.toggle("active");
+});
+
+document.addEventListener("click", (e) => {
+    if (!userDropdown?.contains(e.target)) {
+        userMenu?.classList.remove("active");
+    }
+});
 
 export function initUser() {
     renderUserDropdown();
@@ -19,6 +35,7 @@ export function initUser() {
 function renderUserDropdown() {
     const users = getUsers();
     const activeId = getActiveUser();
+    const activeName = getUserNameById(activeId);
 
     select.replaceChildren();
 
@@ -38,6 +55,14 @@ function renderUserDropdown() {
 
         select.appendChild(option);
     });
+
+    if (activeUserName) {
+        activeUserName.textContent = activeName;
+
+        if (activeName === "Unknown") {
+            activeUserName.textContent = "Register";
+        }
+    }
 }
 
 function handleAddUser() {
