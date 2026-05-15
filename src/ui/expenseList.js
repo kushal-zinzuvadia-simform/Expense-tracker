@@ -1,4 +1,6 @@
 import { deleteExpense, getExpenses } from "../services/expenseService.js";
+import { getUserNameById, getActiveUser } from "../services/userService.js";
+import { renderSummary } from "./summary.js";
 
 const container = document.querySelector(".expense-items");
 const emptyState = document.getElementById("empty-state");
@@ -10,31 +12,42 @@ export function initExpenseList({ onEdit }) {
     handleEdit = onEdit;
 
     container.addEventListener("click", (e) => {
-        const id = e.target.dataset.id;
+        const btn = e.target.closest("button");
+        if (!btn) return;
 
-        if (e.target.classList.contains("delete-btn")) {
+        const id = btn.dataset.id;
+
+        if (btn.classList.contains("delete-btn")) {
             deleteExpense(id);
             renderExpenses();
+            renderSummary();
         }
 
-        if (e.target.classList.contains("edit-btn")) {
+        if (btn.classList.contains("edit-btn")) {
             const expense = getExpenses().find(exp => exp.id === id);
-            if (handleEdit) handleEdit(expense);
+            if (handleEdit && expense) handleEdit(expense);
         }
     });
 }
 
 export function renderExpenses() {
     const expenses = getExpenses();
+    const activeUserId = getActiveUser();
+
+    // Filter expenses where active user is involved
+    const filteredExpenses = activeUserId ? expenses.filter(exp =>
+        exp.paidBy === activeUserId || exp.split?.some(s => s.userId === activeUserId)
+    ) : expenses;
+
     container.replaceChildren();
 
-    if (expenses.length === 0) {
+    if (filteredExpenses.length === 0) {
         emptyState.classList.remove("hidden");
     } else {
         emptyState.classList.add("hidden");
     }
 
-    expenses.forEach(exp => {
+    filteredExpenses.forEach(exp => {
         const card = createExpenseCard(exp);
         container.appendChild(card);
     });
@@ -50,8 +63,9 @@ function createExpenseCard(exp) {
 
     const middle = createElement("div", "expense-middle");
     const desc = createElement("p", "description", exp.description);
-    const meta = createElement("p", "meta", `Paid by ${exp.paidBy}`);
-    middle.append(desc, meta);
+    const paidBy = createElement("p", "meta", `Paid by ${getUserNameById(exp.paidBy)}`);
+    const splitWith = createElement("p", "meta", "Split with " + getSplitNames(exp.split));
+    middle.append(desc, paidBy, splitWith);
 
     const actions = createElement("div", "expense-actions");
     const editBtn = createElement("button", "edit-btn", "Edit");
@@ -73,4 +87,15 @@ function createElement(tag, className, text) {
         element.textContent = text;
 
     return element;
+}
+
+function getSplitNames(splitData) {
+    if (!Array.isArray(splitData)) return "";
+
+    const names = [];
+    splitData.forEach(split => {
+        names.push(getUserNameById(split.userId));
+    });
+
+    return names.join(", ");
 }
