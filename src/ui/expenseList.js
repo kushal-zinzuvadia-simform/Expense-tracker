@@ -1,5 +1,5 @@
 import { deleteExpense, getExpenses } from "../services/expenseService.js";
-import { getUserNameById, getActiveUser } from "../services/userService.js";
+import { getUserNameById, getActiveUser, isUserDeleted } from "../services/userService.js";
 import { renderSummary } from "./summary.js";
 
 const container = document.querySelector(".expense-items");
@@ -71,7 +71,7 @@ function createExpenseCard(exp) {
         const fromLabel = exp.settlementMeta.from === activeUserId ? "You" : fromName;
         const toLabel = exp.settlementMeta.to === activeUserId ? "You" : toName;
 
-        const flow = createElement("p", "meta", `${fromLabel} paid ${toLabel}`);
+        const flow = createElement("p", "meta", fromLabel + " paid " + toLabel);
         middle.append(flow);
 
         const actions = createElement("div", "expense-actions");
@@ -90,8 +90,12 @@ function createExpenseCard(exp) {
 
     const middle = createElement("div", "expense-middle");
     const desc = createElement("p", "description", exp.description);
-    const paidBy = createElement("p", "meta", `Paid by ${getUserNameById(exp.paidBy)}`);
-    const splitWith = createElement("p", "meta", "Split with " + getSplitNames(exp.split));
+
+    const paidBy = createElement("p", "meta", "Paid by " + getUserNameById(exp.paidBy));
+
+    const splitNames = getSplitNamesWithFlags(exp.split);
+    const splitWith = createElement("p", "meta", "Split with " + splitNames.text);
+
     middle.append(desc, paidBy, splitWith);
 
     const actions = createElement("div", "expense-actions");
@@ -116,13 +120,14 @@ function createElement(tag, className, text) {
     return element;
 }
 
-function getSplitNames(splitData) {
-    if (!Array.isArray(splitData)) return "";
+function getSplitNamesWithFlags(splitData) {
+    if (!Array.isArray(splitData)) return { text: "", hasDeleted: false };
 
-    const names = [];
-    splitData.forEach(split => {
-        names.push(getUserNameById(split.userId));
+    let hasDeleted = false;
+    const names = splitData.map(split => {
+        if (isUserDeleted(split.userId)) hasDeleted = true;
+        return getUserNameById(split.userId);
     });
 
-    return names.join(", ");
+    return { text: names.join(", "), hasDeleted };
 }

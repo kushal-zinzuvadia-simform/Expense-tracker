@@ -1,5 +1,5 @@
 import { addExpense, updateExpense } from "../services/expenseService.js";
-import { getUsers } from "../services/userService.js";
+import { getActiveUsers } from "../services/userService.js";
 import { openModal, closeModal, initModalKeyboardHandlers } from "./modal.js";
 import { showToast } from "./toast.js";
 import { validateExpenseForm } from "./validation.js";
@@ -159,8 +159,7 @@ export function initForm({ onSave }) {
         closeEditModal();
     });
 
-    // Initialize modal keyboard handlers
-    initModalKeyboardHandlers([createModal, editModal]);
+    initModalKeyboardHandlers([createModal, editModal, document.getElementById("settle-modal")]);
 }
 
 export function setEditMode(expense) {
@@ -186,7 +185,7 @@ export function setEditMode(expense) {
 }
 
 function populateUserControls(selectEl, checkboxContainer) {
-    const users = getUsers();
+    const users = getActiveUsers();
 
     // Populate select dropdown
     selectEl.replaceChildren();

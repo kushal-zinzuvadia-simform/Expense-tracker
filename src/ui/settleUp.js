@@ -102,5 +102,5 @@ function handleSettle(e) {
     renderExpenses();
     renderSummary();
     closeSettleModal();
-    showToast("Settlement recorded successfully.", "success");
+    showToast("Settled up successfully.", "success");
 }

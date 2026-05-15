@@ -1,4 +1,4 @@
-import { addUser, deleteUser, getActiveUser, getUserNameById, getUsers, setActiveUser } from "../services/userService.js"
+import { addUser, deleteUser, getActiveUser, getActiveUsers, getUserNameById, getUsers, setActiveUser } from "../services/userService.js"
 import { calculateBalances } from "../services/balanceService.js";
 import { getExpenses } from "../services/expenseService.js";
 import { renderExpenses } from "./expenseList.js";
@@ -68,7 +68,7 @@ function renderActiveUserName() {
 function renderUserList() {
     userListContainer.replaceChildren();
 
-    const users = getUsers();
+    const users = getActiveUsers();
     const activeId = getActiveUser();
 
     if (users.length === 0) {
