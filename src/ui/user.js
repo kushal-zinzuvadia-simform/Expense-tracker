@@ -1,10 +1,11 @@
-import { addUser, getActiveUser, getUserNameById, getUsers, setActiveUser } from "../services/userService.js"
+import { addUser, deleteUser, getActiveUser, getUserNameById, getUsers, setActiveUser } from "../services/userService.js"
+import { calculateBalances } from "../services/balanceService.js";
+import { getExpenses } from "../services/expenseService.js";
 import { renderExpenses } from "./expenseList.js";
 import { renderUserOptions } from "./form.js";
 import { renderSummary } from "./summary.js";
 import { showToast } from "./toast.js";
 
-const select = document.getElementById("active-user-select");
 const input = document.getElementById("new-user-input");
 const addBtn = document.getElementById("add-user-btn");
 
@@ -13,8 +14,15 @@ const userMenu = document.querySelector(".user-menu");
 const userDropdown = document.querySelector(".user-dropdown");
 const activeUserName = document.querySelector(".user-name");
 
+const userListToggle = document.getElementById("user-list-toggle");
+const userListContainer = document.getElementById("user-list-container");
+const userListChevron = document.getElementById("user-list-chevron");
+
+let listExpanded = false;
+
 export function initUser() {
-    renderUserDropdown();
+    renderActiveUserName();
+    renderUserList();
     renderUserOptions();
 
     profileBtn?.addEventListener("click", (e) => {
@@ -28,48 +36,114 @@ export function initUser() {
         }
     });
 
+    userListToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        listExpanded = !listExpanded;
+
+        if (listExpanded) {
+            userListContainer.classList.remove("user-list-collapsed");
+        } else {
+            userListContainer.classList.add("user-list-collapsing");
+            setTimeout(() => {
+                userListContainer.classList.remove("user-list-collapsing");
+                userListContainer.classList.add("user-list-collapsed");
+            }, 200);
+        }
+
+        userListChevron.textContent = listExpanded ? "▴" : "▾";
+    });
+
     addBtn.addEventListener("click", handleAddUser);
-    select.addEventListener("change", handleSwitchUser);
 }
 
-function renderUserDropdown() {
-    const users = getUsers();
+function renderActiveUserName() {
     const activeId = getActiveUser();
     const activeName = getUserNameById(activeId);
 
-    select.replaceChildren();
+    if (activeUserName) {
+        activeUserName.textContent = activeName === "Unknown" ? "Register" : activeName;
+    }
+}
 
-    const defaultOption = document.createElement("option");
-    defaultOption.value = "";
-    defaultOption.textContent = "Select user";
-    select.appendChild(defaultOption);
+function renderUserList() {
+    userListContainer.replaceChildren();
+
+    const users = getUsers();
+    const activeId = getActiveUser();
+
+    if (users.length === 0) {
+        const empty = document.createElement("p");
+        empty.className = "user-list-empty";
+        empty.textContent = "No users yet.";
+        userListContainer.appendChild(empty);
+        return;
+    }
 
     users.forEach(user => {
-        const option = document.createElement("option");
-        option.value = user.id;
-        option.textContent = user.name;
+        const row = document.createElement("div");
+        row.className = "user-list-row" + (user.id === activeId ? " user-list-row--active" : "");
 
-        if (user.id === activeId) {
-            option.selected = true;
-        }
+        const name = document.createElement("span");
+        name.className = "user-list-name";
+        name.textContent = user.name;
 
-        select.appendChild(option);
+        name.addEventListener("click", (e) => {
+            e.stopPropagation();
+            handleSwitchUser(user.id);
+        });
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "user-delete-btn";
+        delBtn.title = "Delete " + user.name;
+        delBtn.textContent = "✕";
+        delBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            handleDeleteUser(user.id, user.name);
+        });
+
+        row.append(name, delBtn);
+        userListContainer.appendChild(row);
+    });
+}
+
+function handleSwitchUser(userId) {
+    setActiveUser(userId);
+    renderActiveUserName();
+    renderUserList();
+    renderExpenses();
+    renderSummary();
+}
+
+function handleDeleteUser(userId, userName) {
+    const expenses = getExpenses();
+    const balances = calculateBalances(expenses);
+
+    const userOwes = balances[userId] || {};
+    const hasOwes = Object.values(userOwes).some(amt => amt > 0);
+
+    const othersOwe = Object.entries(balances).some(([borrower, lenders]) => {
+        if (borrower === userId) return false;
+        return Object.entries(lenders).some(([lender, amt]) => lender === userId && amt > 0);
     });
 
-    if (activeUserName) {
-        activeUserName.textContent = activeName;
-
-        if (activeName === "Unknown") {
-            activeUserName.textContent = "Register";
-        }
+    if (hasOwes || othersOwe) {
+        showToast("Cannot delete \"" + userName + "\". Please settle all balances first.");
+        return;
     }
+
+    deleteUser(userId);
+    renderActiveUserName();
+    renderUserList();
+    renderUserOptions();
+    renderExpenses();
+    renderSummary();
+    showToast("\"" + userName + "\" has been removed.", "success");
 }
 
 function handleAddUser() {
     const name = input.value.trim();
 
-    if (!name)
-        return;
+    if (!name) return;
 
     if (name.length < 2 || name.length > 20) {
         showToast("User name must be between 2 and 20 characters.");
@@ -77,7 +151,6 @@ function handleAddUser() {
     }
 
     const validNamePattern = /[a-zA-Z]/;
-
     if (!validNamePattern.test(name)) {
         showToast("Enter valid User name.");
         return;
@@ -92,18 +165,7 @@ function handleAddUser() {
     addUser(name);
     input.value = "";
 
-    renderUserDropdown();
+    renderActiveUserName();
+    renderUserList();
     renderUserOptions();
-}
-
-function handleSwitchUser(e) {
-    const userId = e.target.value;
-
-    if (!userId)
-        return;
-
-    setActiveUser(userId);
-    renderUserDropdown();
-    renderExpenses();
-    renderSummary();
 }

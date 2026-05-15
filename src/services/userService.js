@@ -38,3 +38,13 @@ export function setActiveUser(id) {
 export function getActiveUser() {
     return activeUserId;
 }
+
+export function deleteUser(id) {
+    users = users.filter(user => user.id !== id);
+    setData("users", users);
+
+    if (activeUserId === id) {
+        activeUserId = users.length > 0 ? users[0].id : null;
+        setData("activeUserId", activeUserId);
+    }
+}

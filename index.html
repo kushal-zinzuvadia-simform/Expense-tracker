@@ -30,12 +30,13 @@
             </div>
 
             <div class="user-menu">
-                <div class="nav-user">
-                    <label for="active-user-select">Select active user: </label>
+                <div class="nav-user-header" id="user-list-toggle">
+                    <span class="nav-user-label">Select active user</span>
+                    <span class="nav-user-chevron" id="user-list-chevron">▾</span>
+                </div>
 
-                    <select id="active-user-select">
-                        <option value="">Select Active user</option>
-                    </select>
+                <div id="user-list-container" class="user-list-container user-list-collapsed">
+                    <!-- Dynamic user rows -->
                 </div>
 
                 <hr class="partition">
@@ -184,6 +185,7 @@
 
     <div id="toast-container" aria-live="polite"></div>
 
+    <!-- Settle Up Modal -->
     <div id="settle-modal" class="modal-overlay" hidden>
         <div class="modal">
             <h2>Settle Up</h2>
