@@ -635,6 +635,95 @@ button[type="submit"]:hover {
     background: #e5e7eb;
 }
 
+
+/* Settle Up Button in Balance List */
+.balance-item-right {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-shrink: 0;
+}
+
+.settle-btn {
+    padding: 0.28rem 0.65rem;
+    background: #eef2ff;
+    color: #4f46e5;
+    border: 1px solid #c7d2fe;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: background 0.15s ease, transform 0.1s ease, border-color 0.15s ease;
+    white-space: nowrap;
+}
+
+.settle-btn:hover {
+    background: #e0e7ff;
+    border-color: #a5b4fc;
+    transform: translateY(-1px);
+}
+
+.settle-btn:active {
+    transform: scale(0.96);
+}
+
+/* Settle Up Modal */
+.settle-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.settle-direction {
+    margin-bottom: 0.5rem;
+}
+
+.settle-flow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #f5f3ff;
+    border: 1px solid #ddd6fe;
+    border-radius: 12px;
+    padding: 0.85rem 1.1rem;
+}
+
+.settle-user {
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 8px;
+}
+
+.settle-from {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.settle-to {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.settle-arrow {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6366f1;
+}
+
+/* Settlement Expense Card */
+.expense-card--settlement {
+    border-color: #ddd6fe;
+    background: linear-gradient(135deg, #faf5ff 0%, #f5f3ff 100%);
+}
+
+.expense-card--settlement:hover {
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.1);
+}
+
 /* Notifications */
 #toast-container {
     position: fixed;

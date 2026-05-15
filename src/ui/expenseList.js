@@ -56,6 +56,33 @@ export function renderExpenses() {
 function createExpenseCard(exp) {
     const card = createElement("div", "expense-card");
 
+    if (exp.isSettlement) {
+        card.classList.add("expense-card--settlement");
+
+        const top = createElement("div", "expense-top");
+        const amount = createElement("span", "amount", `₹${exp.amount}`);
+        const date = createElement("span", "date", exp.date);
+        top.append(amount, date);
+
+        const middle = createElement("div", "expense-middle");
+        const fromName = getUserNameById(exp.settlementMeta.from);
+        const toName = getUserNameById(exp.settlementMeta.to);
+        const activeUserId = getActiveUser();
+        const fromLabel = exp.settlementMeta.from === activeUserId ? "You" : fromName;
+        const toLabel = exp.settlementMeta.to === activeUserId ? "You" : toName;
+
+        const flow = createElement("p", "meta", `${fromLabel} paid ${toLabel}`);
+        middle.append(flow);
+
+        const actions = createElement("div", "expense-actions");
+        const deleteBtn = createElement("button", "delete-btn", "Delete");
+        deleteBtn.dataset.id = exp.id;
+        actions.append(deleteBtn);
+
+        card.append(top, middle, actions);
+        return card;
+    }
+
     const top = createElement("div", "expense-top");
     const amount = createElement("span", "amount", `₹${exp.amount}`);
     const date = createElement("span", "date", exp.date);

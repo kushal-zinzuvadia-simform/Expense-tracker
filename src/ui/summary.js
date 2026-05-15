@@ -1,6 +1,7 @@
 import { calculateBalances } from "../services/balanceService.js";
 import { getExpenses } from "../services/expenseService.js";
 import { getActiveUser, getUserNameById } from "../services/userService.js";
+import { openSettleModal } from "./settleUp.js";
 
 export function renderSummary() {
     const expenses = getExpenses();
@@ -56,7 +57,16 @@ export function renderSummary() {
         itemAmount.textContent = `₹${Number(amount).toFixed(2)}`;
         redTotal += amount;
 
-        item.append(spanItem, itemAmount);
+        const settleBtn = document.createElement("button");
+        settleBtn.className = "settle-btn";
+        settleBtn.textContent = "Settle Up";
+        settleBtn.addEventListener("click", () => openSettleModal(lender, amount));
+
+        const rightGroup = document.createElement("div");
+        rightGroup.className = "balance-item-right";
+        rightGroup.append(itemAmount, settleBtn);
+
+        item.append(spanItem, rightGroup);
         balanceList.appendChild(item);
     }
 
@@ -82,7 +92,17 @@ export function renderSummary() {
                 itemAmount.textContent = `₹${Number(amount).toFixed(2)}`;
                 greenTotal += amount;
 
-                item.append(spanItem, itemAmount);
+                const settleBtn = document.createElement("button");
+                settleBtn.className = "settle-btn";
+                settleBtn.textContent = "Settle Up";
+                // balance is negative from active user's perspective (they are owed)
+                settleBtn.addEventListener("click", () => openSettleModal(borrower, -amount));
+
+                const rightGroup = document.createElement("div");
+                rightGroup.className = "balance-item-right";
+                rightGroup.append(itemAmount, settleBtn);
+
+                item.append(spanItem, rightGroup);
                 balanceList.appendChild(item);
             }
         }

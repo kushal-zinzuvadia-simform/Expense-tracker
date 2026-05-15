@@ -184,6 +184,23 @@
 
     <div id="toast-container" aria-live="polite"></div>
 
+    <div id="settle-modal" class="modal-overlay" hidden>
+        <div class="modal">
+            <h2>Settle Up</h2>
+            <div class="settle-direction" id="settle-direction"></div>
+            <form id="settle-form" class="expense-form settle-form">
+                <div class="form-group full-width">
+                    <label for="settle-amount">Amount</label>
+                    <input type="number" id="settle-amount" placeholder="₹0.00" min="0.01" step="0.01" required>
+                </div>
+                <div class="form-actions full-width">
+                    <button type="button" id="cancel-settle-btn">Cancel</button>
+                    <button type="submit" id="settle-submit-btn">Settle Up</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="./src/main.js" type="module"></script>
 </body>
 
