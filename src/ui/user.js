@@ -157,7 +157,7 @@ function handleAddUser() {
     }
 
     const users = getUsers();
-    if (users.some(user => user.name.toLowerCase() === name.toLowerCase())) {
+    if (users.some(user => !user.deleted && user.name.toLowerCase() === name.toLowerCase())) {
         showToast("User already exists.");
         return;
     }

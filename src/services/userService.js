@@ -14,7 +14,7 @@ export function getActiveUsers() {
 export function getUserNameById(id) {
     const user = users.find(user => user.id === id);
     if (!user) return "Unknown";
-    return user.deleted ? user.name + " (deleted)" : user.name;
+    return user.displayName ?? user.name;
 }
 
 export function addUser(name) {
@@ -52,6 +52,7 @@ export function deleteUser(id) {
     const user = users.find(u => u.id === id);
     if (user) {
         user.deleted = true;
+        user.displayName = `${user.name} (deleted #${user.id.slice(0, 4)})`;
         setData("users", users);
     }
 
