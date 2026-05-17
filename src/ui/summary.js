@@ -1,6 +1,6 @@
 import { calculateBalances } from "../services/balanceService.js";
 import { getExpenses } from "../services/expenseService.js";
-import { getActiveUser, getUserNameById } from "../services/userService.js";
+import { getActiveUser, getUserNameById, isUserDeleted } from "../services/userService.js";
 import { openSettleModal } from "./settleUp.js";
 
 export function renderSummary() {
@@ -60,7 +60,12 @@ export function renderSummary() {
         const settleBtn = document.createElement("button");
         settleBtn.className = "settle-btn";
         settleBtn.textContent = "Settle Up";
-        settleBtn.addEventListener("click", () => openSettleModal(lender, amount));
+        if (isUserDeleted(lender)) {
+            settleBtn.disabled = true;
+            settleBtn.title = "Cannot settle, involves a deleted user";
+        } else {
+            settleBtn.addEventListener("click", () => openSettleModal(lender, amount));
+        }
 
         const rightGroup = document.createElement("div");
         rightGroup.className = "balance-item-right";
@@ -95,8 +100,13 @@ export function renderSummary() {
                 const settleBtn = document.createElement("button");
                 settleBtn.className = "settle-btn";
                 settleBtn.textContent = "Settle Up";
-                // balance is negative from active user's perspective (they are owed)
-                settleBtn.addEventListener("click", () => openSettleModal(borrower, -amount));
+                if (isUserDeleted(borrower)) {
+                    settleBtn.disabled = true;
+                    settleBtn.title = "Cannot settle, involves a deleted user";
+                } else {
+                    // balance is negative from active user's perspective (they are owed)
+                    settleBtn.addEventListener("click", () => openSettleModal(borrower, -amount));
+                }
 
                 const rightGroup = document.createElement("div");
                 rightGroup.className = "balance-item-right";

@@ -13,7 +13,7 @@ export function initExpenseList({ onEdit }) {
 
     container.addEventListener("click", (e) => {
         const btn = e.target.closest("button");
-        if (!btn) return;
+        if (!btn || btn.disabled) return;
 
         const id = btn.dataset.id;
 
@@ -74,9 +74,15 @@ function createExpenseCard(exp) {
         const flow = createElement("p", "meta", fromLabel + " paid " + toLabel);
         middle.append(flow);
 
+        const hasDeletedUser = involvesDeletedUser(exp);
+
         const actions = createElement("div", "expense-actions");
         const deleteBtn = createElement("button", "delete-btn", "Delete");
         deleteBtn.dataset.id = exp.id;
+        if (hasDeletedUser) {
+            deleteBtn.disabled = true;
+            deleteBtn.title = "Cannot delete, involves a deleted user";
+        }
         actions.append(deleteBtn);
 
         card.append(top, middle, actions);
@@ -98,12 +104,22 @@ function createExpenseCard(exp) {
 
     middle.append(desc, paidBy, splitWith);
 
+    const hasDeletedUser = involvesDeletedUser(exp);
+
     const actions = createElement("div", "expense-actions");
     const editBtn = createElement("button", "edit-btn", "Edit");
     editBtn.dataset.id = exp.id;
+    if (hasDeletedUser) {
+        editBtn.disabled = true;
+        editBtn.title = "Cannot edit, involves a deleted user";
+    }
 
     const deleteBtn = createElement("button", "delete-btn", "Delete");
     deleteBtn.dataset.id = exp.id;
+    if (hasDeletedUser) {
+        deleteBtn.disabled = true;
+        deleteBtn.title = "Cannot delete, involves a deleted user";
+    }
     actions.append(editBtn, deleteBtn);
 
     card.append(top, middle, actions);
@@ -118,6 +134,17 @@ function createElement(tag, className, text) {
         element.textContent = text;
 
     return element;
+}
+
+function involvesDeletedUser(exp) {
+    if (isUserDeleted(exp.paidBy)) return true;
+    if (Array.isArray(exp.split)) {
+        if (exp.split.some(s => isUserDeleted(s.userId))) return true;
+    }
+    if (exp.settlementMeta) {
+        if (isUserDeleted(exp.settlementMeta.from) || isUserDeleted(exp.settlementMeta.to)) return true;
+    }
+    return false;
 }
 
 function getSplitNamesWithFlags(splitData) {

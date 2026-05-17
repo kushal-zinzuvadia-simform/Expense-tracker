@@ -514,6 +514,37 @@ button[type="submit"]:hover {
     background: #fee2e2;
 }
 
+.edit-btn:disabled,
+.delete-btn:disabled,
+.settle-btn:disabled {
+    cursor: not-allowed;
+    pointer-events: auto;
+    transform: none;
+}
+
+.edit-btn:disabled {
+    background: #e8eaed;
+    color: #6b7280;
+}
+
+.delete-btn:disabled {
+    background: #f3e8e8;
+    color: #9b5454;
+}
+
+.settle-btn:disabled {
+    background: #e8eaed;
+    color: #6b7280;
+    border-color: #d1d5db;
+}
+
+.edit-btn:disabled:hover,
+.delete-btn:disabled:hover,
+.settle-btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
 /* Summary section */
 .summary-container {
     display: grid;
