@@ -31,7 +31,7 @@ export function addSettlementExpense({ fromUserId, toUserId, amount, date }) {
     const expense = {
         id: crypto.randomUUID(),
         amount: Number(amount),
-        description: `Settle up`,
+        description: "Settle up",
         date,
         paidBy: fromUserId,
         split: [{ userId: toUserId, amount: Number(amount) }],

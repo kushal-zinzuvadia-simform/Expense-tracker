@@ -824,6 +824,7 @@ button[type="submit"]:hover {
 
 .user-list-row:hover {
     background: #f3f4f6;
+    cursor: pointer;
 }
 
 .user-list-row--active {

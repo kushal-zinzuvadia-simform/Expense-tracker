@@ -99,8 +99,8 @@ function createExpenseCard(exp) {
 
     const paidBy = createElement("p", "meta", "Paid by " + getUserNameById(exp.paidBy));
 
-    const splitNames = getSplitNamesWithFlags(exp.split);
-    const splitWith = createElement("p", "meta", "Split with " + splitNames.text);
+    const splitNames = getSplitNames(exp.split);
+    const splitWith = createElement("p", "meta", "Split with " + splitNames);
 
     middle.append(desc, paidBy, splitWith);
 
@@ -147,14 +147,8 @@ function involvesDeletedUser(exp) {
     return false;
 }
 
-function getSplitNamesWithFlags(splitData) {
-    if (!Array.isArray(splitData)) return { text: "", hasDeleted: false };
+function getSplitNames(splitData) {
+    if (!Array.isArray(splitData)) return "";
 
-    let hasDeleted = false;
-    const names = splitData.map(split => {
-        if (isUserDeleted(split.userId)) hasDeleted = true;
-        return getUserNameById(split.userId);
-    });
-
-    return { text: names.join(", "), hasDeleted };
+    return splitData.map(split => getUserNameById(split.userId)).join(", ");
 }
