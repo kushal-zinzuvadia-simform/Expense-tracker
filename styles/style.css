@@ -790,7 +790,7 @@ button[type="submit"]:hover {
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
-    overflow: hidden;
+    overflow: auto;
     transition: max-height 0.2s ease, opacity 0.2s ease;
     max-height: 300px;
     opacity: 1;

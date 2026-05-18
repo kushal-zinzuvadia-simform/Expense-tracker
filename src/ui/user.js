@@ -19,6 +19,7 @@ const userListContainer = document.getElementById("user-list-container");
 const userListChevron = document.getElementById("user-list-chevron");
 
 let listExpanded = false;
+let collapseTimerId = null;
 
 export function initUser() {
     renderActiveUserName();
@@ -38,13 +39,15 @@ export function initUser() {
 
     userListToggle.addEventListener("click", (e) => {
         e.stopPropagation();
+        clearTimeout(collapseTimerId);
         listExpanded = !listExpanded;
 
         if (listExpanded) {
+            userListContainer.classList.remove("user-list-collapsing");
             userListContainer.classList.remove("user-list-collapsed");
         } else {
             userListContainer.classList.add("user-list-collapsing");
-            setTimeout(() => {
+            collapseTimerId = setTimeout(() => {
                 userListContainer.classList.remove("user-list-collapsing");
                 userListContainer.classList.add("user-list-collapsed");
             }, 200);
@@ -108,6 +111,7 @@ function renderUserList() {
 
 function handleSwitchUser(userId) {
     setActiveUser(userId);
+    userMenu?.classList.remove("active");
     renderActiveUserName();
     renderUserList();
     renderExpenses();

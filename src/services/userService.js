@@ -23,7 +23,7 @@ export function addUser(name) {
         name
     };
 
-    users.push(user);
+    users.unshift(user);
     setData("users", users);
 
     if (!activeUserId) {
