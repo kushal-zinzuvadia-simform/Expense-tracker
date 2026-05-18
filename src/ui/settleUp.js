@@ -27,7 +27,6 @@ export function initSettleUp() {
 
 export function openSettleModal(otherUserId, balance) {
     const activeUserId = getActiveUser();
-    const activeName = getUserNameById(activeUserId);
     const otherName = getUserNameById(otherUserId);
 
     const absBalance = Math.abs(balance);
@@ -48,7 +47,7 @@ export function openSettleModal(otherUserId, balance) {
         toName = "You";
     }
 
-    settleState = { fromUserId, toUserId, fromName, toName, otherUserId };
+    settleState = { fromUserId, toUserId, fromName, toName, maxAmount: absBalance };
 
     const flow = document.createElement("div");
     flow.className = "settle-flow";
@@ -69,7 +68,6 @@ export function openSettleModal(otherUserId, balance) {
     settleDirection.replaceChildren(flow);
 
     settleAmountInput.value = absBalance.toFixed(2);
-    settleAmountInput.max = "";
 
     openModal(settleModal, settleAmountInput);
 }
@@ -87,6 +85,11 @@ function handleSettle(e) {
     const amount = Number(settleAmountInput.value);
     if (!amount || amount <= 0) {
         showToast("Please enter a valid amount.");
+        return;
+    }
+
+    if (amount > settleState.maxAmount) {
+        showToast(`Amount cannot exceed ₹${settleState.maxAmount.toFixed(2)}.`);
         return;
     }
 
