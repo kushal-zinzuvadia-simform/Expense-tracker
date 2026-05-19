@@ -2,7 +2,9 @@ import { deleteExpense, getExpenses } from "../services/expenseService.js";
 import { getUserNameById, getActiveUser, isUserDeleted } from "../services/userService.js";
 import { renderSummary } from "./summary.js";
 
-const container = document.querySelector(".expense-items");
+const expenseLists = document.querySelector(".expense-lists");
+const newExpensesContainer = document.getElementById("new-expense-items");
+const settledExpensesContainer = document.getElementById("settled-expense-items");
 const emptyState = document.getElementById("empty-state");
 
 let handleEdit = null;
@@ -11,7 +13,7 @@ let handleEdit = null;
 export function initExpenseList({ onEdit }) {
     handleEdit = onEdit;
 
-    container.addEventListener("click", (e) => {
+    expenseLists.addEventListener("click", (e) => {
         const btn = e.target.closest("button");
         if (!btn || btn.disabled) return;
 
@@ -39,15 +41,30 @@ export function renderExpenses() {
         exp.paidBy === activeUserId || exp.split?.some(s => s.userId === activeUserId)
     ) : expenses;
 
-    container.replaceChildren();
+    newExpensesContainer.replaceChildren();
+    settledExpensesContainer.replaceChildren();
+
+    const newExpenses = filteredExpenses.filter(exp => !exp.isSettlement);
+    const settledExpenses = filteredExpenses.filter(exp => exp.isSettlement);
 
     if (filteredExpenses.length === 0) {
         emptyState.classList.remove("hidden");
+        expenseLists.style.display = "none";
     } else {
         emptyState.classList.add("hidden");
+        expenseLists.style.display = "grid";
+        renderExpenseSection(newExpensesContainer, newExpenses, "No new expenses yet!");
+        renderExpenseSection(settledExpensesContainer, settledExpenses, "No settlements yet!");
+    }
+}
+
+function renderExpenseSection(container, expenses, emptyText) {
+    if (!expenses.length) {
+        container.appendChild(createElement("div", "expense-panel-empty", emptyText));
+        return;
     }
 
-    filteredExpenses.forEach(exp => {
+    expenses.forEach(exp => {
         const card = createExpenseCard(exp);
         container.appendChild(card);
     });
@@ -77,7 +94,7 @@ function createExpenseCard(exp) {
         const hasDeletedUser = involvesDeletedUser(exp);
 
         const actions = createElement("div", "expense-actions");
-        const deleteBtn = createElement("button", "delete-btn", "Delete");
+        const deleteBtn = createElement("button", "delete-btn", "Unsettle");
         deleteBtn.dataset.id = exp.id;
         if (hasDeletedUser) {
             deleteBtn.disabled = true;
