@@ -1,8 +1,10 @@
 import { deleteExpense, getExpenses } from "../services/expenseService.js";
-import { getUserNameById, getActiveUser } from "../services/userService.js";
+import { getUserNameById, getActiveUser, isUserDeleted } from "../services/userService.js";
 import { renderSummary } from "./summary.js";
 
-const container = document.querySelector(".expense-items");
+const expenseLists = document.querySelector(".expense-lists");
+const newExpensesContainer = document.getElementById("new-expense-items");
+const settledExpensesContainer = document.getElementById("settled-expense-items");
 const emptyState = document.getElementById("empty-state");
 
 let handleEdit = null;
@@ -11,9 +13,9 @@ let handleEdit = null;
 export function initExpenseList({ onEdit }) {
     handleEdit = onEdit;
 
-    container.addEventListener("click", (e) => {
+    expenseLists.addEventListener("click", (e) => {
         const btn = e.target.closest("button");
-        if (!btn) return;
+        if (!btn || btn.disabled) return;
 
         const id = btn.dataset.id;
 
@@ -39,15 +41,30 @@ export function renderExpenses() {
         exp.paidBy === activeUserId || exp.split?.some(s => s.userId === activeUserId)
     ) : expenses;
 
-    container.replaceChildren();
+    newExpensesContainer.replaceChildren();
+    settledExpensesContainer.replaceChildren();
+
+    const newExpenses = filteredExpenses.filter(exp => !exp.isSettlement);
+    const settledExpenses = filteredExpenses.filter(exp => exp.isSettlement);
 
     if (filteredExpenses.length === 0) {
         emptyState.classList.remove("hidden");
+        expenseLists.style.display = "none";
     } else {
         emptyState.classList.add("hidden");
+        expenseLists.style.display = "grid";
+        renderExpenseSection(newExpensesContainer, newExpenses, "No new expenses yet!");
+        renderExpenseSection(settledExpensesContainer, settledExpenses, "No settlements yet!");
+    }
+}
+
+function renderExpenseSection(container, expenses, emptyText) {
+    if (!expenses.length) {
+        container.appendChild(createElement("div", "expense-panel-empty", emptyText));
+        return;
     }
 
-    filteredExpenses.forEach(exp => {
+    expenses.forEach(exp => {
         const card = createExpenseCard(exp);
         container.appendChild(card);
     });
@@ -56,6 +73,39 @@ export function renderExpenses() {
 function createExpenseCard(exp) {
     const card = createElement("div", "expense-card");
 
+    if (exp.isSettlement) {
+        card.classList.add("expense-card--settlement");
+
+        const top = createElement("div", "expense-top");
+        const amount = createElement("span", "amount", `₹${exp.amount}`);
+        const date = createElement("span", "date", exp.date);
+        top.append(amount, date);
+
+        const middle = createElement("div", "expense-middle");
+        const fromName = getUserNameById(exp.settlementMeta.from);
+        const toName = getUserNameById(exp.settlementMeta.to);
+        const activeUserId = getActiveUser();
+        const fromLabel = exp.settlementMeta.from === activeUserId ? "You" : fromName;
+        const toLabel = exp.settlementMeta.to === activeUserId ? "You" : toName;
+
+        const flow = createElement("p", "meta", fromLabel + " paid " + toLabel);
+        middle.append(flow);
+
+        const hasDeletedUser = involvesDeletedUser(exp);
+
+        const actions = createElement("div", "expense-actions");
+        const deleteBtn = createElement("button", "delete-btn", "Unsettle");
+        deleteBtn.dataset.id = exp.id;
+        if (hasDeletedUser) {
+            deleteBtn.disabled = true;
+            deleteBtn.title = "Cannot delete, involves a deleted user";
+        }
+        actions.append(deleteBtn);
+
+        card.append(top, middle, actions);
+        return card;
+    }
+
     const top = createElement("div", "expense-top");
     const amount = createElement("span", "amount", `₹${exp.amount}`);
     const date = createElement("span", "date", exp.date);
@@ -63,16 +113,30 @@ function createExpenseCard(exp) {
 
     const middle = createElement("div", "expense-middle");
     const desc = createElement("p", "description", exp.description);
-    const paidBy = createElement("p", "meta", `Paid by ${getUserNameById(exp.paidBy)}`);
-    const splitWith = createElement("p", "meta", "Split with " + getSplitNames(exp.split));
+
+    const paidBy = createElement("p", "meta", "Paid by " + getUserNameById(exp.paidBy));
+
+    const splitNames = getSplitNames(exp.split);
+    const splitWith = createElement("p", "meta", "Split with " + splitNames);
+
     middle.append(desc, paidBy, splitWith);
+
+    const hasDeletedUser = involvesDeletedUser(exp);
 
     const actions = createElement("div", "expense-actions");
     const editBtn = createElement("button", "edit-btn", "Edit");
     editBtn.dataset.id = exp.id;
+    if (hasDeletedUser) {
+        editBtn.disabled = true;
+        editBtn.title = "Cannot edit, involves a deleted user";
+    }
 
     const deleteBtn = createElement("button", "delete-btn", "Delete");
     deleteBtn.dataset.id = exp.id;
+    if (hasDeletedUser) {
+        deleteBtn.disabled = true;
+        deleteBtn.title = "Cannot delete, involves a deleted user";
+    }
     actions.append(editBtn, deleteBtn);
 
     card.append(top, middle, actions);
@@ -89,13 +153,19 @@ function createElement(tag, className, text) {
     return element;
 }
 
+function involvesDeletedUser(exp) {
+    if (isUserDeleted(exp.paidBy)) return true;
+    if (Array.isArray(exp.split)) {
+        if (exp.split.some(s => isUserDeleted(s.userId))) return true;
+    }
+    if (exp.settlementMeta) {
+        if (isUserDeleted(exp.settlementMeta.from) || isUserDeleted(exp.settlementMeta.to)) return true;
+    }
+    return false;
+}
+
 function getSplitNames(splitData) {
     if (!Array.isArray(splitData)) return "";
 
-    const names = [];
-    splitData.forEach(split => {
-        names.push(getUserNameById(split.userId));
-    });
-
-    return names.join(", ");
+    return splitData.map(split => getUserNameById(split.userId)).join(", ");
 }

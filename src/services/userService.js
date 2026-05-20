@@ -7,10 +7,14 @@ export function getUsers() {
     return [...users];
 }
 
+export function getActiveUsers() {
+    return users.filter(user => !user.deleted);
+}
+
 export function getUserNameById(id) {
-    const users = getUsers();
     const user = users.find(user => user.id === id);
-    return user ? user.name : "Unknown";
+    if (!user) return "Unknown";
+    return user.displayName ?? user.name;
 }
 
 export function addUser(name) {
@@ -19,7 +23,7 @@ export function addUser(name) {
         name
     };
 
-    users.push(user);
+    users.unshift(user);
     setData("users", users);
 
     if (!activeUserId) {
@@ -37,4 +41,24 @@ export function setActiveUser(id) {
 
 export function getActiveUser() {
     return activeUserId;
+}
+
+export function isUserDeleted(id) {
+    const user = users.find(u => u.id === id);
+    return user ? !!user.deleted : false;
+}
+
+export function deleteUser(id) {
+    const user = users.find(u => u.id === id);
+    if (user) {
+        user.deleted = true;
+        user.displayName = `${user.name} (deleted #${user.id.slice(0, 4)})`;
+        setData("users", users);
+    }
+
+    if (activeUserId === id) {
+        const next = users.find(u => !u.deleted);
+        activeUserId = next ? next.id : null;
+        setData("activeUserId", activeUserId);
+    }
 }

@@ -30,12 +30,13 @@
             </div>
 
             <div class="user-menu">
-                <div class="nav-user">
-                    <label for="active-user-select">Select active user: </label>
+                <div class="nav-user-header" id="user-list-toggle">
+                    <span class="nav-user-label">Select active user</span>
+                    <span class="nav-user-chevron" id="user-list-chevron">▾</span>
+                </div>
 
-                    <select id="active-user-select">
-                        <option value="">Select Active user</option>
-                    </select>
+                <div id="user-list-container" class="user-list-container user-list-collapsed">
+                    <!-- Dynamic user rows -->
                 </div>
 
                 <hr class="partition">
@@ -62,8 +63,24 @@
                 <p class="empty-state-hint">Click "New Expense" to get started</p>
             </div>
 
-            <div class="expense-items">
-                <!-- Dynamic expense cards -->
+            <div class="expense-lists">
+                <div class="expense-panel">
+                    <div class="expense-panel-header">
+                        <h3>New expenses</h3>
+                    </div>
+                    <div class="expense-items" id="new-expense-items">
+                        <!-- Dynamic expense cards -->
+                    </div>
+                </div>
+
+                <div class="expense-panel">
+                    <div class="expense-panel-header">
+                        <h3>Settled Up</h3>
+                    </div>
+                    <div class="expense-items" id="settled-expense-items">
+                        <!-- Dynamic settlement cards -->
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -72,7 +89,7 @@
 
             <div class="summary-container">
 
-                <div class="summary-card">
+                <div class="summary-card overview">
                     <h3>Overview</h3>
                     <p>Total Spent: <span class="total-paid">₹0</span></p>
                     <p>Total Splits: <span class="total-split">₹0</span></p>
@@ -183,6 +200,24 @@
     </div>
 
     <div id="toast-container" aria-live="polite"></div>
+
+    <!-- Settle Up Modal -->
+    <div id="settle-modal" class="modal-overlay" hidden>
+        <div class="modal">
+            <h2>Settle Up</h2>
+            <div class="settle-direction" id="settle-direction"></div>
+            <form id="settle-form" class="expense-form settle-form">
+                <div class="form-group full-width">
+                    <label for="settle-amount">Amount</label>
+                    <input type="number" id="settle-amount" placeholder="₹0.00" min="0.01" step="0.01" required>
+                </div>
+                <div class="form-actions full-width">
+                    <button type="button" id="cancel-settle-btn">Cancel</button>
+                    <button type="submit" id="settle-submit-btn">Settle Up</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="./src/main.js" type="module"></script>
 </body>
